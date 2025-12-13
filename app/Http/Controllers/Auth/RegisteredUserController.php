@@ -40,7 +40,7 @@ class RegisteredUserController extends Controller
         ]);
 
         // Create tenant first
-        $defaultCurrency = Currency::where('code', 'USD')->first();
+        $defaultCurrency = Currency::where('code', 'EUR')->first();
         
         $tenant = Tenant::create([
             'name' => $request->company_name,
