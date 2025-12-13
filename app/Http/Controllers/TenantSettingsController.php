@@ -22,6 +22,7 @@ class TenantSettingsController extends Controller
     {
         $validated = $request->validate([
             'default_currency_id' => 'required|exists:currencies,id',
+            'project_number_format' => 'required|string|max:255',
         ]);
 
         $tenant = auth()->user()->tenant;

@@ -40,11 +40,24 @@
                         @error('default_currency_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                        <small class="text-muted">This currency will be pre-selected when creating new projects</small>
+                        <small class="text-muted">Changing the default currency will <i>not</i> affect existing projects</small>
                     </div>
 
-                    <div class="alert alert-info">
-                        <i class="bi bi-info-circle"></i> <strong>Note:</strong> Changing the default currency will not affect existing projects. Each project can have its own currency.
+                    <div class="mb-3">
+                        <label for="project_number_format" class="form-label">Project Number Format *</label>
+                        <input type="text" 
+                               class="form-control @error('project_number_format') is-invalid @enderror" 
+                               id="project_number_format" 
+                               name="project_number_format" 
+                               value="{{ old('project_number_format', $tenant->project_number_format) }}" 
+                               required>
+                        @error('project_number_format')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="text-muted">
+                            Use <code>yyyy</code> for year and <code>nnnn</code> for auto-incrementing number.<br>
+                            Example: <code>PR-yyyy-nnnn</code> generates PR-2025-0001, PR-2025-0002, etc.
+                        </small>
                     </div>
 
                     <div class="d-flex gap-2">

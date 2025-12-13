@@ -24,6 +24,7 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
+                            <th>Number</th>
                             <th>Project</th>
                             <th>Client</th>
                             <th>Status</th>
@@ -35,6 +36,7 @@
                     <tbody>
                         @foreach($projects as $project)
                             <tr>
+                                <td><code>{{ $project->project_number }}</code></td>
                                 <td><strong>{{ $project->name }}</strong></td>
                                 <td>{{ $project->client->name }}</td>
                                 <td>

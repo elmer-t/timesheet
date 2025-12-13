@@ -114,7 +114,7 @@
             
             @if(auth()->user()->isTenantAdmin())
                 <li class="nav-item mt-3">
-                    <h6 class="sidebar-heading px-3 mt-4 mb-1 text-muted text-uppercase">
+                    <h6 class="sidebar-heading px-3 mt-4 mb-1 text-white text-uppercase">
                         <small>Administration</small>
                     </h6>
                 </li>

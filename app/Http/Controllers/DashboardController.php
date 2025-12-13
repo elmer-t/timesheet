@@ -7,7 +7,7 @@ use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
         $user = auth()->user();
         
@@ -21,18 +21,27 @@ class DashboardController extends Controller
                 return $registration->duration * $registration->project->hourly_rate;
             });
         
-        // Recent registrations
-        $recentRegistrations = $user->timeRegistrations()
-            ->with(['client', 'project.currency'])
-            ->orderBy('date', 'desc')
-            ->take(10)
+        // Calendar data
+        $month = $request->get('month', now()->month);
+        $year = $request->get('year', now()->year);
+        
+        // Get registrations for the selected month
+        $monthStart = \Carbon\Carbon::create($year, $month, 1)->startOfMonth();
+        $monthEnd = $monthStart->copy()->endOfMonth();
+        
+        $monthRegistrations = $user->timeRegistrations()
+            ->with(['project', 'client'])
+            ->whereBetween('date', [$monthStart, $monthEnd])
+            ->orderBy('date', 'asc')
             ->get();
 
         return view('app.dashboard', compact(
             'totalRegistrations',
             'totalHours',
             'totalRevenue',
-            'recentRegistrations'
+            'month',
+            'year',
+            'monthRegistrations'
         ));
     }
 }

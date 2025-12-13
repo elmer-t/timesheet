@@ -18,6 +18,12 @@
                     @method('PUT')
                     
                     <div class="mb-3">
+                        <label class="form-label">Project Number</label>
+                        <input type="text" class="form-control" value="{{ $project->project_number }}" disabled>
+                        <small class="text-muted">Project numbers cannot be changed</small>
+                    </div>
+                    
+                    <div class="mb-3">
                         <label for="client_id" class="form-label">Client *</label>
                         <select class="form-select @error('client_id') is-invalid @enderror" 
                                 id="client_id" name="client_id" required>

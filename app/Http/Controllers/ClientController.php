@@ -88,4 +88,14 @@ class ClientController extends Controller
         return redirect()->route('app.clients.trashed')
             ->with('success', 'Client permanently deleted.');
     }
+
+    public function getProjects(Client $client)
+    {
+        $projects = $client->projects()
+            ->whereNull('deleted_at')
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        return response()->json($projects);
+    }
 }

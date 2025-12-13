@@ -36,6 +36,9 @@ Route::prefix('app')->middleware(['auth', 'tenant'])->name('app.')->group(functi
     // Time Registrations (all users)
     Route::resource('registrations', TimeRegistrationController::class);
     
+    // API endpoint for fetching projects by client
+    Route::get('/clients/{client}/projects', [ClientController::class, 'getProjects'])->name('clients.projects');
+    
     // Timesheets (all users)
     Route::get('/timesheets', [TimesheetController::class, 'index'])->name('timesheets.index');
     Route::get('/timesheets/print', [TimesheetController::class, 'print'])->name('timesheets.print');

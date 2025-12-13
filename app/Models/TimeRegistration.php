@@ -57,4 +57,12 @@ class TimeRegistration extends Model
     {
         return $this->duration * $this->project->hourly_rate;
     }
+
+    /**
+     * Get hours (alias for duration for calendar)
+     */
+    public function getHoursAttribute(): float
+    {
+        return (float) $this->duration;
+    }
 }

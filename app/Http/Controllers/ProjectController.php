@@ -39,6 +39,10 @@ class ProjectController extends Controller
         ]);
 
         $validated['tenant_id'] = auth()->user()->tenant_id;
+        
+        // Generate project number
+        $tenant = auth()->user()->tenant;
+        $validated['project_number'] = $tenant->generateProjectNumber();
 
         Project::create($validated);
 

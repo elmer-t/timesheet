@@ -19,6 +19,7 @@ class Project extends Model
         'tenant_id',
         'client_id',
         'currency_id',
+        'project_number',
         'name',
         'description',
         'status',
