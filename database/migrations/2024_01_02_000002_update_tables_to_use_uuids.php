@@ -24,11 +24,6 @@ return new class extends Migration
         Schema::dropIfExists('clients');
         Schema::dropIfExists('users');
         Schema::dropIfExists('tenants');
-        Schema::dropIfExists('cache');
-        Schema::dropIfExists('cache_locks');
-        Schema::dropIfExists('jobs');
-        Schema::dropIfExists('job_batches');
-        Schema::dropIfExists('failed_jobs');
         
         // Recreate tenants with UUID
         Schema::create('tenants', function (Blueprint $table) {

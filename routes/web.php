@@ -46,6 +46,15 @@ Route::prefix('app')->middleware(['auth', 'tenant'])->name('app.')->group(functi
         Route::resource('projects', ProjectController::class);
         Route::resource('invitations', InvitationController::class)->except(['show', 'edit', 'update']);
         
+        // Trashed Records
+        Route::get('/clients/trashed/list', [ClientController::class, 'trashed'])->name('clients.trashed');
+        Route::post('/clients/{id}/restore', [ClientController::class, 'restore'])->name('clients.restore');
+        Route::delete('/clients/{id}/force', [ClientController::class, 'forceDestroy'])->name('clients.force-destroy');
+        
+        Route::get('/projects/trashed/list', [ProjectController::class, 'trashed'])->name('projects.trashed');
+        Route::post('/projects/{id}/restore', [ProjectController::class, 'restore'])->name('projects.restore');
+        Route::delete('/projects/{id}/force', [ProjectController::class, 'forceDestroy'])->name('projects.force-destroy');
+        
         // Tenant Settings
         Route::get('/settings', [TenantSettingsController::class, 'edit'])->name('settings.edit');
         Route::put('/settings', [TenantSettingsController::class, 'update'])->name('settings.update');

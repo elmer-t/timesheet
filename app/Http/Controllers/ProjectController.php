@@ -79,4 +79,28 @@ class ProjectController extends Controller
         return redirect()->route('app.projects.index')
             ->with('success', 'Project deleted successfully.');
     }
+
+    public function trashed(): View
+    {
+        $projects = Project::onlyTrashed()->with(['client', 'currency'])->orderBy('deleted_at', 'desc')->paginate(15);
+        return view('app.projects.trashed', compact('projects'));
+    }
+
+    public function restore(string $id): RedirectResponse
+    {
+        $project = Project::onlyTrashed()->findOrFail($id);
+        $project->restore();
+
+        return redirect()->route('app.projects.trashed')
+            ->with('success', 'Project restored successfully.');
+    }
+
+    public function forceDestroy(string $id): RedirectResponse
+    {
+        $project = Project::onlyTrashed()->findOrFail($id);
+        $project->forceDelete();
+
+        return redirect()->route('app.projects.trashed')
+            ->with('success', 'Project permanently deleted.');
+    }
 }

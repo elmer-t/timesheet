@@ -8,6 +8,9 @@
         <h1 class="h2">Clients</h1>
     </div>
     <div class="col-auto">
+        <a href="{{ route('app.clients.trashed') }}" class="btn btn-outline-secondary me-2">
+            <i class="bi bi-trash"></i> View Deleted
+        </a>
         <a href="{{ route('app.clients.create') }}" class="btn btn-primary">
             <i class="bi bi-plus-circle"></i> New Client
         </a>

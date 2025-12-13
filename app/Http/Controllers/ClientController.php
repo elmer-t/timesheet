@@ -64,4 +64,28 @@ class ClientController extends Controller
         return redirect()->route('app.clients.index')
             ->with('success', 'Client deleted successfully.');
     }
+
+    public function trashed(): View
+    {
+        $clients = Client::onlyTrashed()->orderBy('deleted_at', 'desc')->paginate(15);
+        return view('app.clients.trashed', compact('clients'));
+    }
+
+    public function restore(string $id): RedirectResponse
+    {
+        $client = Client::onlyTrashed()->findOrFail($id);
+        $client->restore();
+
+        return redirect()->route('app.clients.trashed')
+            ->with('success', 'Client restored successfully.');
+    }
+
+    public function forceDestroy(string $id): RedirectResponse
+    {
+        $client = Client::onlyTrashed()->findOrFail($id);
+        $client->forceDelete();
+
+        return redirect()->route('app.clients.trashed')
+            ->with('success', 'Client permanently deleted.');
+    }
 }

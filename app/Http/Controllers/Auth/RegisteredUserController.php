@@ -46,6 +46,10 @@ class RegisteredUserController extends Controller
             'name' => $request->company_name,
             'slug' => Str::slug($request->company_name) . '-' . Str::random(6),
             'default_currency_id' => $defaultCurrency?->id,
+            'client_limit' => 3,  // Free tier
+            'project_limit' => 3,  // Free tier
+            'user_limit' => 1,  // Free tier
+            'custom_templates' => false,
         ]);
 
         // Create user as tenant admin
