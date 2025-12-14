@@ -61,7 +61,7 @@
                         <td>{{ $registration->location ?? '-' }}</td>
                         <td>
                             @if($registration->distance)
-                                {{ number_format($registration->distance, 1) }} {{ auth()->user()->tenant->distance_unit }}
+                                {{ $registration->distance }} {{ auth()->user()->tenant->distance_unit }}
                             @else
                                 -
                             @endif
@@ -74,7 +74,7 @@
                 <tr class="table-active fw-bold">
                     <td colspan="3" class="text-end">Total:</td>
                     <td>-</td>
-                    <td>{{ number_format($totalDistance, 1) }} {{ auth()->user()->tenant->distance_unit }}</td>
+                    <td>{{ $totalDistance }} {{ auth()->user()->tenant->distance_unit }}</td>
                     <td>{{ number_format($totalHours, 1) }}</td>
                 </tr>
             </tfoot>

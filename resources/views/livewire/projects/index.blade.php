@@ -32,8 +32,16 @@
                         <tbody>
                             @foreach($projects as $project)
                                 <tr>
-                                    <td><code>{{ $project->project_number }}</code></td>
-                                    <td><strong>{{ $project->name }}</strong></td>
+                                    <td>
+                                        <a href="{{ route('app.projects.edit', $project) }}" class="text-decoration-none" wire:navigate>
+                                            <code>{{ $project->project_number }}</code>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('app.projects.edit', $project) }}" class="text-decoration-none" wire:navigate>
+                                            <strong>{{ $project->name }}</strong>
+                                        </a>
+                                    </td>
                                     <td>{{ $project->client->name }}</td>
                                     <td>
                                         @if($project->status === 'active')

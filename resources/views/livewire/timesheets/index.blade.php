@@ -39,7 +39,7 @@
                 <h5>{{ $periodLabel }}</h5>
                 <p class="mb-0">
                     <strong>Total Hours:</strong> {{ number_format($totalHours, 2) }} | 
-                    <strong>Total Distance:</strong> {{ number_format($totalDistance, 1) }} {{ Auth::user()->tenant->distance_unit }} | 
+                    <strong>Total Distance:</strong> {{ $totalDistance }} {{ Auth::user()->tenant->distance_unit }} | 
                     <strong>Total Revenue:</strong> {{ number_format($totalRevenue, 2) }}
                 </p>
             </div>
@@ -78,7 +78,7 @@
                                     <td>{{ $registration->location ?? '-' }}</td>
                                     <td>
                                         @if($registration->distance)
-                                            {{ number_format($registration->distance, 1) }} {{ Auth::user()->tenant->distance_unit }}
+                                            {{ $registration->distance }} {{ Auth::user()->tenant->distance_unit }}
                                         @else
                                             -
                                         @endif

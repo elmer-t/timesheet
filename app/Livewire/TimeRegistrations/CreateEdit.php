@@ -33,7 +33,7 @@ class CreateEdit extends Component
             'description' => 'nullable|string',
             'status' => 'required|in:' . implode(',', array_keys(TimeRegistration::getStatuses())),
             'location' => 'nullable|string|max:255',
-            'distance' => 'nullable|numeric|min:0|max:9999.99',
+            'distance' => 'nullable|integer|min:0|max:999999',
         ];
     }
 

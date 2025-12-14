@@ -79,8 +79,8 @@
 
                             <div class="col-md-6 mb-3">
                                 <label for="distance" class="form-label">Distance ({{ Auth::user()->tenant->distance_unit }})</label>
-                                <input type="number" step="0.1" class="form-control @error('distance') is-invalid @enderror" 
-                                       id="distance" wire:model="distance" min="0" placeholder="0.0">
+                                <input type="number" step="1" class="form-control @error('distance') is-invalid @enderror" 
+                                       id="distance" wire:model="distance" min="0" placeholder="0">
                                 @error('distance')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror

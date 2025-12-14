@@ -55,6 +55,29 @@ class CreateEdit extends Component
 
     public function render()
     {
-        return view('livewire.clients.create-edit');
+        $stats = null;
+        
+        if ($this->clientId) {
+            $client = Client::with(['timeRegistrations', 'projects'])->findOrFail($this->clientId);
+            $registrations = $client->timeRegistrations;
+            
+            $stats = [
+                'total_projects' => $client->projects->count(),
+                'active_projects' => $client->projects->where('status', 'active')->count(),
+                'total_registrations' => $registrations->count(),
+                'total_hours' => $registrations->sum('duration'),
+                'total_distance' => $registrations->sum('distance'),
+                'total_revenue' => $registrations->sum(function($r) {
+                    return $r->duration * ($r->project->hourly_rate ?? 0);
+                }),
+                'by_status' => [
+                    'ready_to_invoice' => $registrations->where('status', 'ready_to_invoice')->count(),
+                    'invoiced' => $registrations->where('status', 'invoiced')->count(),
+                    'paid' => $registrations->where('status', 'paid')->count(),
+                ],
+            ];
+        }
+        
+        return view('livewire.clients.create-edit', compact('stats'));
     }
 }

@@ -30,7 +30,11 @@
                         <tbody>
                             @foreach($registrations as $registration)
                                 <tr>
-                                    <td>{{ $registration->date->format('M d, Y') }}</td>
+                                    <td>
+                                        <a href="{{ route('app.registrations.edit', $registration) }}" class="text-decoration-none" wire:navigate>
+                                            {{ $registration->date->format('M d, Y') }}
+                                        </a>
+                                    </td>
                                     <td>{{ $registration->client->name }}</td>
                                     <td>
                                         @if($registration->project)

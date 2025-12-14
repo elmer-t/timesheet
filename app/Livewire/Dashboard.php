@@ -124,7 +124,7 @@ class Dashboard extends Component
             'description' => 'nullable|string|max:1000',
             'status' => 'required|in:ready_to_invoice,invoiced,paid',
             'location' => 'nullable|string|max:255',
-            'distance' => 'nullable|numeric|min:0|max:9999.99',
+            'distance' => 'nullable|integer|min:0|max:999999',
         ]);
 
         if ($this->registration_id) {
@@ -176,37 +176,13 @@ class Dashboard extends Component
     {
         $user = auth()->user();
         
-        // Get summary statistics
-        $totalRegistrations = $user->timeRegistrations()->count();
-        $totalHours = $user->timeRegistrations()->sum('duration');
-        $totalRevenue = $user->timeRegistrations()
-            ->with('project')
-            ->get()
-            ->sum(function ($registration) {
-                if (!$registration->project) {
-                    return 0;
-                }
-                return $registration->duration * $registration->project->hourly_rate;
-            });
-        
-        // Status-based metrics
-        $readyToInvoiceStats = [
-            'count' => $user->timeRegistrations()->readyToInvoice()->count(),
-            'hours' => $user->timeRegistrations()->readyToInvoice()->sum('duration'),
-            'revenue' => $user->timeRegistrations()->readyToInvoice()->with('project')->get()->sum(fn($r) => $r->revenue),
-        ];
-        
-        $invoicedStats = [
-            'count' => $user->timeRegistrations()->invoiced()->count(),
-            'hours' => $user->timeRegistrations()->invoiced()->sum('duration'),
-            'revenue' => $user->timeRegistrations()->invoiced()->with('project')->get()->sum(fn($r) => $r->revenue),
-        ];
-        
-        $paidStats = [
-            'count' => $user->timeRegistrations()->paid()->count(),
-            'hours' => $user->timeRegistrations()->paid()->sum('duration'),
-            'revenue' => $user->timeRegistrations()->paid()->with('project')->get()->sum(fn($r) => $r->revenue),
-        ];
+        if (!$user) {
+            return view('livewire.dashboard', [
+                'weeks' => [],
+                'clients' => collect(),
+                'projects' => collect(),
+            ]);
+        }
         
         // Calendar data
         $monthStart = Carbon::create($this->year, $this->month, 1)->startOfMonth();
@@ -235,7 +211,7 @@ class Dashboard extends Component
                 
                 return [
                     'total_hours' => $dayRegistrations->sum('duration'),
-                    'total_distance' => $dayRegistrations->sum('distance'),
+                    'total_distance' => $dayRegistrations->sum(fn($r) => $r->distance ?? 0),
                     'count' => $dayRegistrations->count(),
                     'by_status' => $byStatus,
                 ];
@@ -289,12 +265,6 @@ class Dashboard extends Component
             : collect();
 
         return view('livewire.dashboard', compact(
-            'totalRegistrations',
-            'totalHours',
-            'totalRevenue',
-            'readyToInvoiceStats',
-            'invoicedStats',
-            'paidStats',
             'weeks',
             'clients',
             'projects'

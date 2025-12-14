@@ -111,5 +111,46 @@
                 </div>
             </div>
         </div>
+        
+        @if($projectId && $stats)
+            <div class="col-md-4">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5 class="mb-0">Project Statistics</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <small class="text-muted d-block">Total Hours</small>
+                            <h4 class="mb-0">{{ number_format($stats['total_hours'], 2) }}</h4>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted d-block">Total Revenue</small>
+                            <h4 class="mb-0">{{ number_format($stats['total_revenue'], 2) }}</h4>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted d-block">Total Distance</small>
+                            <h4 class="mb-0">{{ number_format($stats['total_distance']) }} km</h4>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted d-block">Time Registrations</small>
+                            <h4 class="mb-0">{{ $stats['total_registrations'] }}</h4>
+                        </div>
+                        <hr>
+                        <div class="mb-2">
+                            <small class="text-muted">Ready to Invoice:</small>
+                            <strong>{{ $stats['by_status']['ready_to_invoice'] }}</strong>
+                        </div>
+                        <div class="mb-2">
+                            <small class="text-muted">Invoiced:</small>
+                            <strong>{{ $stats['by_status']['invoiced'] }}</strong>
+                        </div>
+                        <div>
+                            <small class="text-muted">Paid:</small>
+                            <strong>{{ $stats['by_status']['paid'] }}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
     </div>
 </div>

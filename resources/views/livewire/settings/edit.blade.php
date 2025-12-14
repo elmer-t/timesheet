@@ -64,6 +64,16 @@
                             @enderror
                         </div>
 
+                        <div class="mb-3">
+                            <label for="mileage_allowance" class="form-label">Mileage Allowance (per {{ $distance_unit }})</label>
+                            <input type="number" step="0.01" class="form-control @error('mileage_allowance') is-invalid @enderror" 
+                                   id="mileage_allowance" wire:model="mileage_allowance" min="0" max="999.99" placeholder="0.00">
+                            @error('mileage_allowance')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="text-muted">Optional: Rate for mileage reimbursement</small>
+                        </div>
+
                         <div>
                             <button type="submit" class="btn btn-primary" wire:loading.attr="disabled">
                                 <span wire:loading.remove>Save Settings</span>

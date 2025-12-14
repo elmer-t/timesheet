@@ -36,12 +36,17 @@ class CreateEdit extends Component
         ];
     }
 
-    public function mount($id = null)
+    public function mount($id = null, $client_id = null)
     {
         $this->clients = Client::orderBy('name')->get();
         $this->currencies = Currency::orderBy('code')->get();
         $this->currency_id = auth()->user()->tenant->default_currency_id;
         $this->start_date = date('Y-m-d');
+
+        // Pre-select client if passed from client detail page
+        if ($client_id) {
+            $this->client_id = $client_id;
+        }
 
         if ($id) {
             $project = Project::findOrFail($id);
@@ -88,6 +93,27 @@ class CreateEdit extends Component
 
     public function render()
     {
-        return view('livewire.projects.create-edit');
+        $stats = null;
+        
+        if ($this->projectId) {
+            $project = Project::with('timeRegistrations')->findOrFail($this->projectId);
+            $registrations = $project->timeRegistrations;
+            
+            $stats = [
+                'total_registrations' => $registrations->count(),
+                'total_hours' => $registrations->sum('duration'),
+                'total_distance' => $registrations->sum('distance'),
+                'total_revenue' => $registrations->sum(function($r) {
+                    return $r->duration * $r->project->hourly_rate;
+                }),
+                'by_status' => [
+                    'ready_to_invoice' => $registrations->where('status', 'ready_to_invoice')->count(),
+                    'invoiced' => $registrations->where('status', 'invoiced')->count(),
+                    'paid' => $registrations->where('status', 'paid')->count(),
+                ],
+            ];
+        }
+        
+        return view('livewire.projects.create-edit', compact('stats'));
     }
 }

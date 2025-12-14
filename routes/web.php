@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ClientController;
@@ -31,7 +32,10 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
 Route::prefix('app')->middleware(['auth', 'tenant'])->name('app.')->group(function () {
     
     // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/calendar', [DashboardController::class, 'index'])->name('calendar');
+    
+    // Analytics
+    Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
     
     // Time Registrations (all users)
     Route::resource('registrations', TimeRegistrationController::class);

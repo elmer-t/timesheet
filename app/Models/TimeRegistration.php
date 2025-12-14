@@ -27,6 +27,7 @@ class TimeRegistration extends Model
     protected $casts = [
         'date' => 'date',
         'duration' => 'decimal:2',
+        'distance' => 'integer',
     ];
 
     const STATUS_READY_TO_INVOICE = 'ready_to_invoice';

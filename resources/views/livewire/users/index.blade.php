@@ -28,7 +28,9 @@
                             @foreach($users as $user)
                                 <tr>
                                     <td>
-                                        {{ $user->name }}
+                                        <a href="{{ route('app.users.edit', $user) }}" class="text-decoration-none" wire:navigate>
+                                            <strong>{{ $user->name }}</strong>
+                                        </a>
                                         @if($user->id === auth()->id())
                                             <span class="badge bg-primary">You</span>
                                         @endif

@@ -65,6 +65,6 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('app.dashboard');
+        return redirect()->route('app.calendar');
     }
 }

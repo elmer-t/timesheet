@@ -23,6 +23,7 @@ class Tenant extends Model
         'custom_templates',
         'project_number_format',
         'distance_unit',
+        'mileage_allowance',
     ];
 
     public function users(): HasMany

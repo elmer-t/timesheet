@@ -114,7 +114,7 @@ class TimesheetController extends Controller
         }
         
         $totalHours = $registrations->sum('duration');
-        $totalDistance = $registrations->sum('distance');
+        $totalDistance = $registrations->sum(fn($r) => $r->distance ?? 0);
         $totalRevenue = $registrations->sum(function ($reg) {
             if (!$reg->project) {
                 return 0;

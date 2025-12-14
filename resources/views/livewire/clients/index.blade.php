@@ -29,7 +29,11 @@
                         <tbody>
                             @foreach($clients as $client)
                                 <tr>
-                                    <td><strong>{{ $client->name }}</strong></td>
+                                    <td>
+                                        <a href="{{ route('app.clients.edit', $client) }}" class="text-decoration-none" wire:navigate>
+                                            <strong>{{ $client->name }}</strong>
+                                        </a>
+                                    </td>
                                     <td>{{ $client->email }}</td>
                                     <td>{{ $client->phone }}</td>
                                     <td>

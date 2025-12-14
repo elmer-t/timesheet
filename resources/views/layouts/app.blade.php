@@ -10,7 +10,187 @@
     <style>
         body {
             min-height: 100vh;
+            transition: margin-left 0.3s ease, background-color 0.3s ease, color 0.3s ease;
         }
+        
+        /* Light Theme (default) */
+        body {
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+        
+        /* Dark Theme */
+        body.dark-theme {
+            background-color: #1a1d20;
+            color: #e9ecef;
+        }
+        body.dark-theme .card {
+            background-color: #2b3035;
+            color: #e9ecef;
+            border-color: #495057;
+        }
+        body.dark-theme .card-header {
+            background-color: #212529;
+            border-color: #495057;
+            color: #e9ecef;
+        }
+        body.dark-theme .card-body {
+            background-color: #2b3035;
+            color: #e9ecef;
+        }
+        body.dark-theme .card-title {
+            color: #e9ecef;
+        }
+        body.dark-theme .form-label {
+            color: #e9ecef;
+        }
+        body.dark-theme .form-control,
+        body.dark-theme .form-select {
+            background-color: #343a40;
+            color: #e9ecef;
+            border-color: #495057;
+        }
+        body.dark-theme .form-control:focus,
+        body.dark-theme .form-select:focus {
+            background-color: #343a40;
+            color: #e9ecef;
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+        body.dark-theme .form-control::placeholder {
+            color: #6c757d;
+        }
+        body.dark-theme textarea.form-control {
+            background-color: #343a40;
+            color: #e9ecef;
+        }
+        body.dark-theme .invalid-feedback {
+            color: #ea868f;
+        }
+        body.dark-theme .form-control.is-invalid,
+        body.dark-theme .form-select.is-invalid {
+            border-color: #dc3545;
+        }
+        body.dark-theme .table {
+            color: #e9ecef;
+            --bs-table-bg: #2b3035;
+            --bs-table-striped-bg: #343a40;
+            --bs-table-hover-bg: #3d4349;
+            --bs-table-color: #e9ecef;
+        }
+        body.dark-theme .table-bordered {
+            border-color: #495057;
+        }
+        body.dark-theme .table-bordered td,
+        body.dark-theme .table-bordered th {
+            border-color: #495057;
+            color: #e9ecef;
+        }
+        body.dark-theme .table thead th {
+            background-color: #212529;
+            border-color: #495057;
+            color: #e9ecef;
+        }
+        body.dark-theme .table tbody td {
+            color: #e9ecef;
+        }
+        body.dark-theme .table-hover > tbody > tr:hover {
+            --bs-table-hover-bg: #3d4349;
+            --bs-table-hover-color: #e9ecef;
+            color: #e9ecef;
+        }
+        body.dark-theme .table-hover > tbody > tr:hover > * {
+            color: #e9ecef;
+        }
+        body.dark-theme .small,
+        body.dark-theme small {
+            color: #adb5bd;
+        }
+        body.dark-theme strong {
+            color: #f8f9fa;
+        }
+        body.dark-theme .form-control,
+        body.dark-theme .form-select {
+            background-color: #2b3035;
+            color: #e9ecef;
+            border-color: #495057;
+        }
+        body.dark-theme .form-control:focus,
+        body.dark-theme .form-select:focus {
+            background-color: #2b3035;
+            color: #e9ecef;
+            border-color: #0d6efd;
+        }
+        body.dark-theme .modal-content {
+            background-color: #2b3035;
+            color: #e9ecef;
+        }
+        body.dark-theme .modal-header,
+        body.dark-theme .modal-footer {
+            border-color: #495057;
+        }
+        body.dark-theme .modal-title {
+            color: #e9ecef;
+        }
+        body.dark-theme .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+        body.dark-theme .text-muted {
+            color: #adb5bd !important;
+        }
+        body.dark-theme .bg-light {
+            background-color: #343a40 !important;
+        }
+        body.dark-theme .bg-success {
+            background-color: #198754 !important;
+        }
+        body.dark-theme .bg-warning {
+            background-color: #ffc107 !important;
+        }
+        body.dark-theme .bg-opacity-25 {
+            opacity: 0.4 !important;
+        }
+        body.dark-theme .badge {
+            color: #fff;
+        }
+        body.dark-theme .alert {
+            background-color: #2b3035;
+            border-color: #495057;
+        }
+        body.dark-theme .alert-info {
+            background-color: #0d6efd;
+            border-color: #084298;
+            color: #fff;
+        }
+        body.dark-theme a {
+            color: #6ea8fe;
+        }
+        body.dark-theme a:hover {
+            color: #8bb9fe;
+        }
+        body.dark-theme .text-decoration-none {
+            color: inherit;
+        }
+        body.dark-theme .text-decoration-none:hover {
+            color: #6ea8fe;
+        }
+        body.dark-theme code {
+            background-color: #343a40;
+            color: #e685b5;
+        }
+        
+        .theme-toggle {
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0.5rem;
+            color: #fff;
+            background: none;
+            border: none;
+        }
+        .theme-toggle:hover {
+            color: #0d6efd;
+        }
+        
         .sidebar {
             position: fixed;
             top: 0;
@@ -20,10 +200,18 @@
             padding: 56px 0 0;
             background-color: #212529;
             width: 250px;
+            transition: width 0.3s ease;
+            overflow-x: hidden;
+        }
+        .sidebar.collapsed {
+            width: 70px;
         }
         .sidebar .nav-link {
             color: #adb5bd;
             padding: 0.75rem 1rem;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
         }
         .sidebar .nav-link:hover {
             color: #fff;
@@ -35,10 +223,53 @@
         }
         .sidebar .nav-link i {
             margin-right: 0.5rem;
+            min-width: 20px;
+            text-align: center;
+        }
+        .sidebar.collapsed .nav-link i {
+            margin-right: 0;
+        }
+        .sidebar .nav-link-text {
+            transition: opacity 0.3s ease;
+        }
+        .sidebar.collapsed .nav-link-text {
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
+        }
+        .sidebar .sidebar-heading {
+            transition: opacity 0.3s ease;
+        }
+        .sidebar.collapsed .sidebar-heading {
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        .sidebar-toggle-btn {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .sidebar-toggle-btn:hover {
+            background-color: #0d6efd;
         }
         .main-content {
             margin-left: 250px;
             padding-top: 56px;
+            transition: margin-left 0.3s ease;
+        }
+        .main-content.expanded {
+            margin-left: 70px;
         }
         .navbar {
             position: fixed;
@@ -64,10 +295,13 @@
     <!-- Top Navbar -->
     <nav class="navbar navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{{ route('app.dashboard') }}">
+            <a class="navbar-brand" href="{{ route('app.calendar') }}">
                 <i class="bi bi-clock-history"></i> TimeSheet
             </a>
             <div class="d-flex align-items-center">
+                <button class="theme-toggle me-3" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">
+                    <i class="bi bi-moon-stars" id="themeIcon"></i>
+                </button>
                 <span class="text-white me-3">
                     <i class="bi bi-building"></i> {{ auth()->user()->tenant->name }}
                 </span>
@@ -93,24 +327,34 @@
     </nav>
 
     <!-- Sidebar -->
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('app.dashboard') ? 'active' : '' }}" 
-                   href="{{ route('app.dashboard') }}">
-                    <i class="bi bi-speedometer2"></i> Dashboard
+                <a class="nav-link {{ request()->routeIs('app.calendar') ? 'active' : '' }}" 
+                   href="{{ route('app.calendar') }}">
+                    <i class="bi bi-calendar3"></i>
+                    <span class="nav-link-text">Calendar</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('app.analytics') ? 'active' : '' }}" 
+                   href="{{ route('app.analytics') }}">
+                    <i class="bi bi-graph-up"></i>
+                    <span class="nav-link-text">Analytics</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('app.registrations.*') ? 'active' : '' }}" 
                    href="{{ route('app.registrations.index') }}">
-                    <i class="bi bi-clock"></i> Time Registrations
+                    <i class="bi bi-clock"></i>
+                    <span class="nav-link-text">Time Registrations</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('app.timesheets.*') ? 'active' : '' }}" 
                    href="{{ route('app.timesheets.index') }}">
-                    <i class="bi bi-file-earmark-text"></i> Timesheets
+                    <i class="bi bi-file-earmark-text"></i>
+                    <span class="nav-link-text">Timesheets</span>
                 </a>
             </li>
             
@@ -123,33 +367,42 @@
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('app.clients.*') ? 'active' : '' }}" 
                        href="{{ route('app.clients.index') }}">
-                        <i class="bi bi-people"></i> Clients
+                        <i class="bi bi-people"></i>
+                        <span class="nav-link-text">Clients</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('app.projects.*') ? 'active' : '' }}" 
                        href="{{ route('app.projects.index') }}">
-                        <i class="bi bi-briefcase"></i> Projects
+                        <i class="bi bi-briefcase"></i>
+                        <span class="nav-link-text">Projects</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('app.users.*') ? 'active' : '' }}" 
                        href="{{ route('app.users.index') }}">
-                        <i class="bi bi-people-fill"></i> Team Members
+                        <i class="bi bi-people-fill"></i>
+                        <span class="nav-link-text">Team Members</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('app.settings.*') ? 'active' : '' }}" 
                        href="{{ route('app.settings.edit') }}">
-                        <i class="bi bi-gear"></i> Settings
+                        <i class="bi bi-gear"></i>
+                        <span class="nav-link-text">Settings</span>
                     </a>
                 </li>
             @endif
         </ul>
+        
+        <!-- Toggle Button inside Sidebar -->
+        <button class="sidebar-toggle-btn" id="sidebarToggle" onclick="toggleSidebar()">
+            <i class="bi bi-chevron-left" id="toggleIcon"></i>
+        </button>
     </div>
 
     <!-- Main Content -->
-    <main class="main-content">
+    <main class="main-content" id="mainContent">
         <div class="container-fluid py-4">
             @if (session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -193,6 +446,67 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Theme toggle functionality
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('themeIcon');
+            
+            body.classList.toggle('dark-theme');
+            
+            if (body.classList.contains('dark-theme')) {
+                themeIcon.className = 'bi bi-sun';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                themeIcon.className = 'bi bi-moon-stars';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+        
+        // Apply saved theme on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme');
+            const body = document.body;
+            const themeIcon = document.getElementById('themeIcon');
+            
+            if (savedTheme === 'dark') {
+                body.classList.add('dark-theme');
+                themeIcon.className = 'bi bi-sun';
+            }
+        });
+        
+        // Sidebar toggle functionality
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+            
+            // Toggle icon
+            if (sidebar.classList.contains('collapsed')) {
+                toggleIcon.className = 'bi bi-chevron-right';
+                localStorage.setItem('sidebarCollapsed', 'true');
+            } else {
+                toggleIcon.className = 'bi bi-chevron-left';
+                localStorage.setItem('sidebarCollapsed', 'false');
+            }
+        }
+        
+        // Restore sidebar state from localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+            if (isCollapsed) {
+                const sidebar = document.getElementById('sidebar');
+                const mainContent = document.getElementById('mainContent');
+                const toggleIcon = document.getElementById('toggleIcon');
+                
+                sidebar.classList.add('collapsed');
+                mainContent.classList.add('expanded');
+                toggleIcon.className = 'bi bi-chevron-right';
+            }
+        });
+
         // Global function to show toast notifications
         window.showToast = function(type, message) {
             const toastId = type === 'success' ? 'successToast' : 'errorToast';

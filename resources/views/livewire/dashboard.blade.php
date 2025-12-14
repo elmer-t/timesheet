@@ -1,7 +1,7 @@
 <div>
     <div class="row mb-4">
         <div class="col">
-            <h1 class="h2">Dashboard</h1>
+            <h1 class="h2">Calendar</h1>
         </div>
     </div>
 
@@ -91,7 +91,7 @@
                                                 @endif
                                                 @if($day['distance'] > 0)
                                                     <span class="badge bg-secondary" style="font-size: 0.7rem;">
-                                                        {{ number_format($day['distance'], 1) }} {{ Auth::user()->tenant->distance_unit }}
+                                                        {{ $day['distance'] }} {{ Auth::user()->tenant->distance_unit }}
                                                     </span>
                                                 @endif
                                             </div>
@@ -102,58 +102,6 @@
                         @endforeach
                     </tbody>
                 </table>
-            </div>
-        </div>
-    </div>
-
-    {{-- Statistics --}}
-    <div class="row mb-4">
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title text-muted">Total Hours</h5>
-                    <h2 class="mb-0">{{ number_format($totalHours, 2) }}</h2>
-                    <small class="text-muted">{{ $totalRegistrations }} registrations</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title text-muted">Total Revenue</h5>
-                    <h2 class="mb-0">{{ number_format($totalRevenue, 2) }}</h2>
-                    <small class="text-muted">All time</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title text-muted">Ready to Invoice</h5>
-                    <h2 class="mb-0">{{ number_format($readyToInvoiceStats['revenue'], 2) }}</h2>
-                    <small class="text-muted">{{ number_format($readyToInvoiceStats['hours'], 2) }} hours</small>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Invoiced</h5>
-                    <p class="mb-1">Hours: {{ number_format($invoicedStats['hours'], 2) }}</p>
-                    <p class="mb-0">Revenue: {{ number_format($invoicedStats['revenue'], 2) }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Paid</h5>
-                    <p class="mb-1">Hours: {{ number_format($paidStats['hours'], 2) }}</p>
-                    <p class="mb-0">Revenue: {{ number_format($paidStats['revenue'], 2) }}</p>
-                </div>
             </div>
         </div>
     </div>
@@ -192,7 +140,7 @@
                                                             <span class="me-2">📍 {{ $reg['location'] }}</span>
                                                         @endif
                                                         @if($reg['distance'])
-                                                            <span>🚗 {{ number_format($reg['distance'], 1) }} {{ Auth::user()->tenant->distance_unit }}</span>
+                                                            <span>🚗 {{ $reg['distance'] }} {{ Auth::user()->tenant->distance_unit }}</span>
                                                         @endif
                                                     </small>
                                                 @endif
@@ -285,7 +233,7 @@
 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Distance ({{ Auth::user()->tenant->distance_unit }})</label>
-                                    <input type="number" step="0.1" wire:model="distance" class="form-control @error('distance') is-invalid @enderror" placeholder="0.0">
+                                    <input type="number" step="1" wire:model="distance" class="form-control @error('distance') is-invalid @enderror" placeholder="0">
                                     @error('distance') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                 </div>
                             </div>
