@@ -34,12 +34,12 @@
                                     <td>{{ $client->phone }}</td>
                                     <td>
                                         <a href="{{ route('app.clients.edit', $client) }}" class="btn btn-sm btn-outline-primary" wire:navigate>
-                                            <i class="bi bi-pencil"></i> Edit
+                                            <i class="bi bi-pencil"></i>
                                         </a>
                                         <button type="button" class="btn btn-sm btn-outline-danger" 
                                                 wire:click="deleteClient({{ $client->id }})"
                                                 wire:confirm="Are you sure you want to delete this client?">
-                                            <i class="bi bi-trash"></i> Delete
+                                            <i class="bi bi-trash"></i>
                                         </button>
                                     </td>
                                 </tr>

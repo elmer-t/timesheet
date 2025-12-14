@@ -53,12 +53,12 @@
                                     <td>{{ $project->currency->code }} {{ number_format($project->hourly_rate, 2) }}</td>
                                     <td>
                                         <a href="{{ route('app.projects.edit', $project) }}" class="btn btn-sm btn-outline-primary" wire:navigate>
-                                            <i class="bi bi-pencil"></i> Edit
+                                            <i class="bi bi-pencil"></i>
                                         </a>
                                         <button type="button" class="btn btn-sm btn-outline-danger" 
                                                 wire:click="deleteProject('{{ $project->id }}')"
                                                 wire:confirm="Are you sure you want to delete this project?">
-                                            <i class="bi bi-trash"></i> Delete
+                                            <i class="bi bi-trash"></i>
                                         </button>
                                     </td>
                                 </tr>
