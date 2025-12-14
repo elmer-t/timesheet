@@ -41,6 +41,8 @@
                     <th>Date</th>
                     <th>Project</th>
                     <th>Description</th>
+                    <th>Location</th>
+                    <th>Distance</th>
                     <th>Hours</th>
                 </tr>
             </thead>
@@ -48,8 +50,22 @@
                 @foreach($registrations as $registration)
                     <tr>
                         <td>{{ $registration->date->format('M d, Y') }}</td>
-                        <td>{{ $registration->project->name }}</td>
+                        <td>
+                            @if($registration->project)
+                                {{ $registration->project->name }}
+                            @else
+                                <span class="text-muted">-</span>
+                            @endif
+                        </td>
                         <td>{{ $registration->description }}</td>
+                        <td>{{ $registration->location ?? '-' }}</td>
+                        <td>
+                            @if($registration->distance)
+                                {{ number_format($registration->distance, 1) }} {{ auth()->user()->tenant->distance_unit }}
+                            @else
+                                -
+                            @endif
+                        </td>
                         <td>{{ number_format($registration->duration, 1) }}</td>
                     </tr>
                 @endforeach
@@ -57,6 +73,8 @@
             <tfoot>
                 <tr class="table-active fw-bold">
                     <td colspan="3" class="text-end">Total:</td>
+                    <td>-</td>
+                    <td>{{ number_format($totalDistance, 1) }} {{ auth()->user()->tenant->distance_unit }}</td>
                     <td>{{ number_format($totalHours, 1) }}</td>
                 </tr>
             </tfoot>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TimeRegistration;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -18,8 +19,30 @@ class DashboardController extends Controller
             ->with('project')
             ->get()
             ->sum(function ($registration) {
+                if (!$registration->project) {
+                    return 0;
+                }
                 return $registration->duration * $registration->project->hourly_rate;
             });
+        
+        // Status-based metrics
+        $readyToInvoiceStats = [
+            'count' => $user->timeRegistrations()->readyToInvoice()->count(),
+            'hours' => $user->timeRegistrations()->readyToInvoice()->sum('duration'),
+            'revenue' => $user->timeRegistrations()->readyToInvoice()->with('project')->get()->sum(fn($r) => $r->revenue),
+        ];
+        
+        $invoicedStats = [
+            'count' => $user->timeRegistrations()->invoiced()->count(),
+            'hours' => $user->timeRegistrations()->invoiced()->sum('duration'),
+            'revenue' => $user->timeRegistrations()->invoiced()->with('project')->get()->sum(fn($r) => $r->revenue),
+        ];
+        
+        $paidStats = [
+            'count' => $user->timeRegistrations()->paid()->count(),
+            'hours' => $user->timeRegistrations()->paid()->sum('duration'),
+            'revenue' => $user->timeRegistrations()->paid()->with('project')->get()->sum(fn($r) => $r->revenue),
+        ];
         
         // Calendar data
         $month = $request->get('month', now()->month);
@@ -39,6 +62,9 @@ class DashboardController extends Controller
             'totalRegistrations',
             'totalHours',
             'totalRevenue',
+            'readyToInvoiceStats',
+            'invoicedStats',
+            'paidStats',
             'month',
             'year',
             'monthRegistrations'

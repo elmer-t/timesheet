@@ -22,6 +22,7 @@ class Tenant extends Model
         'user_limit',
         'custom_templates',
         'project_number_format',
+        'distance_unit',
     ];
 
     public function users(): HasMany
@@ -51,12 +52,12 @@ class Tenant extends Model
 
     public function generateProjectNumber(): string
     {
-        $format = $this->project_number_format ?? 'PR-yyyy-nnnn';
+        $format = $this->project_number_format ?? 'PROJ-{YYYY}-{####}';
         $year = now()->format('Y');
         
-        // Extract the number format (nnnn) to determine padding
-        preg_match('/n+/', $format, $matches);
-        $padding = isset($matches[0]) ? strlen($matches[0]) : 4;
+        // Extract the number format {####} to determine padding
+        preg_match('/\{(#+)\}/', $format, $matches);
+        $padding = isset($matches[1]) ? strlen($matches[1]) : 4;
         
         // Get the last project number for this year
         $lastProject = $this->projects()
@@ -75,8 +76,8 @@ class Tenant extends Model
         }
         
         // Generate the project number
-        $projectNumber = str_replace('yyyy', $year, $format);
-        $projectNumber = preg_replace('/n+/', str_pad($nextNumber, $padding, '0', STR_PAD_LEFT), $projectNumber);
+        $projectNumber = str_replace('{YYYY}', $year, $format);
+        $projectNumber = preg_replace('/\{#+\}/', str_pad($nextNumber, $padding, '0', STR_PAD_LEFT), $projectNumber);
         
         return $projectNumber;
     }

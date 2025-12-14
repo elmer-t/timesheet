@@ -19,12 +19,28 @@ class TimeRegistration extends Model
         'date',
         'duration',
         'description',
+        'status',
+        'location',
+        'distance',
     ];
 
     protected $casts = [
         'date' => 'date',
         'duration' => 'decimal:2',
     ];
+
+    const STATUS_READY_TO_INVOICE = 'ready_to_invoice';
+    const STATUS_INVOICED = 'invoiced';
+    const STATUS_PAID = 'paid';
+
+    public static function getStatuses(): array
+    {
+        return [
+            self::STATUS_READY_TO_INVOICE => 'Ready to Invoice',
+            self::STATUS_INVOICED => 'Invoiced',
+            self::STATUS_PAID => 'Paid',
+        ];
+    }
 
     protected static function booted(): void
     {
@@ -55,6 +71,9 @@ class TimeRegistration extends Model
      */
     public function getRevenueAttribute(): float
     {
+        if (!$this->project) {
+            return 0;
+        }
         return $this->duration * $this->project->hourly_rate;
     }
 
@@ -64,5 +83,29 @@ class TimeRegistration extends Model
     public function getHoursAttribute(): float
     {
         return (float) $this->duration;
+    }
+
+    /**
+     * Scope for ready to invoice registrations
+     */
+    public function scopeReadyToInvoice(Builder $query): Builder
+    {
+        return $query->where('status', self::STATUS_READY_TO_INVOICE);
+    }
+
+    /**
+     * Scope for invoiced registrations
+     */
+    public function scopeInvoiced(Builder $query): Builder
+    {
+        return $query->where('status', self::STATUS_INVOICED);
+    }
+
+    /**
+     * Scope for paid registrations
+     */
+    public function scopePaid(Builder $query): Builder
+    {
+        return $query->where('status', self::STATUS_PAID);
     }
 }

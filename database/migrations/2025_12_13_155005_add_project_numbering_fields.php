@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('tenants', function (Blueprint $table) {
-            $table->string('project_number_format')->default('PR-yyyy-nnnn');
+            $table->string('project_number_format')->default('PR-{YYYY}-{####}');
         });
 
         Schema::table('projects', function (Blueprint $table) {

@@ -51,6 +51,9 @@ class TimesheetController extends Controller
             $registrations = $query->orderBy('date', 'desc')->get();
             $totalHours = $registrations->sum('duration');
             $totalRevenue = $registrations->sum(function ($reg) {
+                if (!$reg->project) {
+                    return 0;
+                }
                 return $reg->duration * $reg->project->hourly_rate;
             });
         }
@@ -77,7 +80,7 @@ class TimesheetController extends Controller
         $client = Client::findOrFail($clientId);
         
         $query = TimeRegistration::where('client_id', $clientId)
-            ->with(['project.currency', 'user']);
+            ->with(['project', 'project.currency', 'user']);
 
         switch ($period) {
             case 'day':
@@ -101,8 +104,21 @@ class TimesheetController extends Controller
         }
 
         $registrations = $query->orderBy('date')->get();
+        
+        // Update all registrations to invoiced status
+        foreach ($registrations as $registration) {
+            if ($registration->status === TimeRegistration::STATUS_READY_TO_INVOICE) {
+                $registration->status = TimeRegistration::STATUS_INVOICED;
+                $registration->save();
+            }
+        }
+        
         $totalHours = $registrations->sum('duration');
+        $totalDistance = $registrations->sum('distance');
         $totalRevenue = $registrations->sum(function ($reg) {
+            if (!$reg->project) {
+                return 0;
+            }
             return $reg->duration * $reg->project->hourly_rate;
         });
 
@@ -110,6 +126,7 @@ class TimesheetController extends Controller
             'client',
             'registrations',
             'totalHours',
+            'totalDistance',
             'totalRevenue',
             'periodLabel'
         ));

@@ -4,12 +4,12 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TenantSettingsController;
 use App\Http\Controllers\TimeRegistrationController;
 use App\Http\Controllers\TimesheetController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 // Landing page
@@ -47,7 +47,11 @@ Route::prefix('app')->middleware(['auth', 'tenant'])->name('app.')->group(functi
     Route::middleware('tenant.admin')->group(function () {
         Route::resource('clients', ClientController::class);
         Route::resource('projects', ProjectController::class);
-        Route::resource('invitations', InvitationController::class)->except(['show', 'edit', 'update']);
+        Route::resource('users', UserController::class);
+        
+        // Send onboarding email
+        Route::post('/users/{user}/send-onboarding', [UserController::class, 'sendOnboarding'])
+            ->name('users.send-onboarding');
         
         // Trashed Records
         Route::get('/clients/trashed/list', [ClientController::class, 'trashed'])->name('clients.trashed');

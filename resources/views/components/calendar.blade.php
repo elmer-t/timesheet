@@ -89,7 +89,7 @@
                                             data-date="{{ $dateKey }}"
                                             data-registrations="{{ json_encode(collect($dailyHours[$dateKey]['registrations'])->map(fn($r) => [
                                                 'id' => $r->id,
-                                                'project' => $r->project->name,
+                                                'project' => $r->project ? $r->project->name : null,
                                                 'description' => $r->description,
                                                 'hours' => $r->hours,
                                                 'edit_url' => route('app.registrations.edit', $r->id)
@@ -137,6 +137,9 @@
                 <!-- Content will be populated by JavaScript -->
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="addNewFromDay">
+                    <i class="bi bi-plus-circle"></i> Add New Registration
+                </button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
@@ -157,7 +160,7 @@
                     <input type="hidden" name="date" id="newRegistrationDate">
                     
                     <div class="mb-3">
-                        <label for="client_id" class="form-label">Client</label>
+                        <label for="client_id" class="form-label">Client *</label>
                         <select name="client_id" id="client_id" class="form-select" required>
                             <option value="">Select a client</option>
                             @foreach(auth()->user()->tenant->clients()->whereNull('deleted_at')->get() as $client)
@@ -168,13 +171,13 @@
 
                     <div class="mb-3">
                         <label for="project_id" class="form-label">Project</label>
-                        <select name="project_id" id="project_id" class="form-select" required>
-                            <option value="">Select a project</option>
+                        <select name="project_id" id="project_id" class="form-select">
+                            <option value="">Select a project (optional)</option>
                         </select>
                     </div>
 
                     <div class="mb-3">
-                        <label for="duration" class="form-label">Duration (hours)</label>
+                        <label for="duration" class="form-label">Duration (hours) *</label>
                         <input type="number" name="duration" id="duration" class="form-control" step="0.25" min="0.25" required>
                     </div>
 
@@ -182,10 +185,85 @@
                         <label for="description" class="form-label">Description</label>
                         <textarea name="description" id="description" class="form-control" rows="3"></textarea>
                     </div>
+
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Status *</label>
+                        <select name="status" id="status" class="form-select" required>
+                            @foreach(\App\Models\TimeRegistration::getStatuses() as $value => $label)
+                                <option value="{{ $value }}" {{ $value === 'ready_to_invoice' ? 'selected' : '' }}>
+                                    {{ $label }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div id="modalErrors" class="alert alert-danger d-none"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Create Registration</button>
+                    <button type="submit" class="btn btn-primary" id="submitRegistration">Create Registration</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for editing registration -->
+<div class="modal fade" id="editRegistrationModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editRegistrationForm" method="POST">
+                @csrf
+                @method('PUT')
+                <input type="hidden" id="editRegistrationId">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Time Registration</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="date" id="editRegistrationDate">
+                    
+                    <div class="mb-3">
+                        <label for="edit_client_id" class="form-label">Client *</label>
+                        <select name="client_id" id="edit_client_id" class="form-select" required>
+                            <option value="">Select a client</option>
+                            @foreach(auth()->user()->tenant->clients()->whereNull('deleted_at')->get() as $client)
+                                <option value="{{ $client->id }}">{{ $client->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="edit_project_id" class="form-label">Project</label>
+                        <select name="project_id" id="edit_project_id" class="form-select">
+                            <option value="">Select a project (optional)</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="edit_duration" class="form-label">Duration (hours) *</label>
+                        <input type="number" name="duration" id="edit_duration" class="form-control" step="0.25" min="0.25" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="edit_description" class="form-label">Description</label>
+                        <textarea name="description" id="edit_description" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="edit_status" class="form-label">Status *</label>
+                        <select name="status" id="edit_status" class="form-select" required>
+                            @foreach(\App\Models\TimeRegistration::getStatuses() as $value => $label)
+                                <option value="{{ $value }}">{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div id="editModalErrors" class="alert alert-danger d-none"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="submitEditRegistration">Update Registration</button>
                 </div>
             </form>
         </div>
@@ -194,6 +272,94 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Handle form submission with AJAX for better feedback
+    const registrationForm = document.querySelector('#newRegistrationModal form');
+    if (registrationForm) {
+        registrationForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitRegistration');
+            const modalErrors = document.getElementById('modalErrors');
+            const formData = new FormData(this);
+            
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Creating...';
+            modalErrors.classList.add('d-none');
+            
+            try {
+                const response = await fetch(this.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    // Success - show toast and reload the page
+                    const data = await response.json();
+                    
+                    // Close modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('newRegistrationModal'));
+                    modal.hide();
+                    
+                    // Show success toast
+                    if (window.showToast) {
+                        window.showToast('success', data.message || 'Time registration created successfully.');
+                    }
+                    
+                    // Reload after a short delay
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
+                } else {
+                    // Handle validation errors
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        const data = await response.json();
+                        let errorHtml = '<ul class="mb-0">';
+                        
+                        if (data.errors) {
+                            Object.values(data.errors).forEach(errors => {
+                                errors.forEach(error => {
+                                    errorHtml += `<li>${error}</li>`;
+                                });
+                            });
+                        } else if (data.message) {
+                            errorHtml += `<li>${data.message}</li>`;
+                        } else {
+                            errorHtml += '<li>An error occurred. Please try again.</li>';
+                        }
+                        
+                        errorHtml += '</ul>';
+                        modalErrors.innerHTML = errorHtml;
+                    } else {
+                        // Non-JSON response (possibly HTML error page)
+                        const text = await response.text();
+                        console.error('Server error:', text);
+                        modalErrors.innerHTML = `<p class="mb-0">Server error (${response.status}). Please try again or contact support.</p>`;
+                    }
+                    modalErrors.classList.remove('d-none');
+                    
+                    // Re-enable submit button
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Create Registration';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                modalErrors.innerHTML = `<p class="mb-0">Network error: ${error.message}. Please check your connection and try again.</p>`;
+                modalErrors.classList.remove('d-none');
+                
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Create Registration';
+            }
+        });
+    }
+    
     // Handle day registrations modal
     const dayModal = document.getElementById('dayModal');
     if (dayModal) {
@@ -226,15 +392,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="list-group-item">
                         <div class="d-flex justify-content-between align-items-start">
                             <div class="flex-grow-1">
-                                <h6 class="mb-1">${reg.project}</h6>
+                                <h6 class="mb-1">${reg.project || '<span class="text-muted">No project</span>'}</h6>
                                 <p class="mb-1 text-muted small">${reg.description || 'No description'}</p>
                             </div>
                             <div class="text-end">
                                 <strong>${reg.hours}h</strong>
                                 <br>
-                                <a href="${reg.edit_url}" class="btn btn-sm btn-outline-primary mt-1">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
+                                <div class="btn-group mt-1">
+                                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="editRegistration('${reg.id}')">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteRegistration('${reg.id}')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -245,6 +416,41 @@ document.addEventListener('DOMContentLoaded', function() {
             html += `<div class="mt-3"><strong>Total: ${totalHours.toFixed(1)} hours</strong></div>`;
             
             modalBody.innerHTML = html;
+            
+            // Store date for 'Add New' button
+            dayModal.dataset.currentDate = date;
+        });
+    }
+    
+    // Handle 'Add New Registration' button in day modal
+    const addNewFromDayBtn = document.getElementById('addNewFromDay');
+    if (addNewFromDayBtn) {
+        addNewFromDayBtn.addEventListener('click', function() {
+            const dayModal = document.getElementById('dayModal');
+            const date = dayModal.dataset.currentDate;
+            
+            // Close day modal
+            const dayModalInstance = bootstrap.Modal.getInstance(dayModal);
+            dayModalInstance.hide();
+            
+            // Open new registration modal
+            const newRegModal = document.getElementById('newRegistrationModal');
+            const modalTitle = newRegModal.querySelector('#newRegistrationModalTitle');
+            const dateInput = newRegModal.querySelector('#newRegistrationDate');
+            
+            const dateObj = new Date(date);
+            const formattedDate = dateObj.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            modalTitle.textContent = 'New Time Registration - ' + formattedDate;
+            dateInput.value = date;
+            
+            const modal = new bootstrap.Modal(newRegModal);
+            modal.show();
         });
     }
 
@@ -272,7 +478,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Handle client selection to populate projects
+    // Handle client selection to populate projects (for new registration)
     const clientSelect = document.getElementById('client_id');
     const projectSelect = document.getElementById('project_id');
     
@@ -298,7 +504,228 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Handle client selection to populate projects (for edit modal)
+    const editClientSelect = document.getElementById('edit_client_id');
+    const editProjectSelect = document.getElementById('edit_project_id');
+    
+    if (editClientSelect && editProjectSelect) {
+        editClientSelect.addEventListener('change', async function() {
+            const clientId = this.value;
+            editProjectSelect.innerHTML = '<option value="">Select a project (optional)</option>';
+            
+            if (clientId) {
+                try {
+                    const response = await fetch(`/app/clients/${clientId}/projects`);
+                    const projects = await response.json();
+                    
+                    projects.forEach(project => {
+                        const option = document.createElement('option');
+                        option.value = project.id;
+                        option.textContent = project.name;
+                        editProjectSelect.appendChild(option);
+                    });
+                } catch (error) {
+                    console.error('Error fetching projects:', error);
+                }
+            }
+        });
+    }
+
+    // Handle edit form submission with AJAX
+    const editRegistrationForm = document.querySelector('#editRegistrationForm');
+    if (editRegistrationForm) {
+        editRegistrationForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitEditRegistration');
+            const modalErrors = document.getElementById('editModalErrors');
+            const formData = new FormData(this);
+            const registrationId = document.getElementById('editRegistrationId').value;
+            
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Updating...';
+            modalErrors.classList.add('d-none');
+            
+            try {
+                const response = await fetch(`/app/registrations/${registrationId}`, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    // Success - show toast and reload the page
+                    const data = await response.json();
+                    
+                    // Close modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('editRegistrationModal'));
+                    modal.hide();
+                    
+                    // Show success toast
+                    if (window.showToast) {
+                        window.showToast('success', data.message || 'Time registration updated successfully.');
+                    }
+                    
+                    // Reload after a short delay
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
+                } else {
+                    // Handle validation errors
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        const data = await response.json();
+                        let errorHtml = '<ul class="mb-0">';
+                        
+                        if (data.errors) {
+                            Object.values(data.errors).forEach(errors => {
+                                errors.forEach(error => {
+                                    errorHtml += `<li>${error}</li>`;
+                                });
+                            });
+                        } else if (data.message) {
+                            errorHtml += `<li>${data.message}</li>`;
+                        } else {
+                            errorHtml += '<li>An error occurred. Please try again.</li>';
+                        }
+                        
+                        errorHtml += '</ul>';
+                        modalErrors.innerHTML = errorHtml;
+                    } else {
+                        // Non-JSON response
+                        const text = await response.text();
+                        console.error('Server error:', text);
+                        modalErrors.innerHTML = `<p class="mb-0">Server error (${response.status}). Please try again or contact support.</p>`;
+                    }
+                    modalErrors.classList.remove('d-none');
+                    
+                    // Re-enable submit button
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Update Registration';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                modalErrors.innerHTML = `<p class="mb-0">Network error: ${error.message}. Please check your connection and try again.</p>`;
+                modalErrors.classList.remove('d-none');
+                
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Update Registration';
+            }
+        });
+    }
 });
+</script>
+
+<script>
+// Global function to delete a registration
+window.deleteRegistration = async function(registrationId) {
+    if (!confirm('Are you sure you want to delete this time registration?')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/app/registrations/${registrationId}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || document.querySelector('input[name="_token"]').value,
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        });
+        
+        if (response.ok) {
+            if (window.showToast) {
+                window.showToast('success', 'Time registration deleted successfully.');
+            }
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
+        } else {
+            const data = await response.json();
+            if (window.showToast) {
+                window.showToast('error', data.message || 'Failed to delete registration.');
+            }
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        if (window.showToast) {
+            window.showToast('error', 'Failed to delete registration. Please try again.');
+        }
+    }
+};
+
+// Global function to edit a registration
+window.editRegistration = async function(registrationId) {
+    try {
+        const response = await fetch(`/app/registrations/${registrationId}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch registration data');
+        }
+        
+        const registration = await response.json();
+        
+        // Populate the form
+        document.getElementById('editRegistrationId').value = registration.id;
+        document.getElementById('editRegistrationDate').value = registration.date;
+        document.getElementById('edit_client_id').value = registration.client_id;
+        document.getElementById('edit_duration').value = registration.duration;
+        document.getElementById('edit_description').value = registration.description || '';
+        document.getElementById('edit_status').value = registration.status;
+        
+        // Load projects for the selected client
+        const projectSelect = document.getElementById('edit_project_id');
+        projectSelect.innerHTML = '<option value="">Select a project (optional)</option>';
+        
+        if (registration.client_id) {
+            const projectsResponse = await fetch(`/app/clients/${registration.client_id}/projects`);
+            const projects = await projectsResponse.json();
+            
+            projects.forEach(project => {
+                const option = document.createElement('option');
+                option.value = project.id;
+                option.textContent = project.name;
+                projectSelect.appendChild(option);
+            });
+            
+            // Select the current project if it exists
+            if (registration.project_id) {
+                projectSelect.value = registration.project_id;
+            }
+        }
+        
+        // Close day modal if open
+        const dayModalEl = document.getElementById('dayModal');
+        if (dayModalEl) {
+            const dayModalInstance = bootstrap.Modal.getInstance(dayModalEl);
+            if (dayModalInstance) {
+                dayModalInstance.hide();
+            }
+        }
+        
+        // Show edit modal
+        const editModal = new bootstrap.Modal(document.getElementById('editRegistrationModal'));
+        editModal.show();
+        
+    } catch (error) {
+        console.error('Error:', error);
+        if (window.showToast) {
+            window.showToast('error', 'Failed to load registration. Please try again.');
+        }
+    }
+};
 </script>
 @endif
 
