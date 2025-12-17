@@ -13,6 +13,7 @@ TODO
 - [x] Link to new project from client detail page
 - [x] In index views, make names/numbers clickable to visit edit view
 - [x] Change distance travelled to integer
+- [ ] Implement project types: Paid, Unpaid
 
 ## Bugs
 - [x] When logged in user visits /login, nothing happens. Should redirect to Calendar
