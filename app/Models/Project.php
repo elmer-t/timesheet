@@ -26,6 +26,7 @@ class Project extends Model
         'start_date',
         'end_date',
         'hourly_rate',
+        'mileage_allowance',
     ];
 
     protected $casts = [

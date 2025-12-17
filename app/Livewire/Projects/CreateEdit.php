@@ -18,6 +18,7 @@ class CreateEdit extends Component
     public $start_date;
     public $end_date = '';
     public $hourly_rate = '';
+    public $mileage_allowance = '';
     
     public $clients = [];
     public $currencies = [];
@@ -33,6 +34,7 @@ class CreateEdit extends Component
             'start_date' => 'required|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
             'hourly_rate' => 'required|numeric|min:0',
+            'mileage_allowance' => 'nullable|numeric|min:0|max:999.99',
         ];
     }
 
@@ -59,6 +61,7 @@ class CreateEdit extends Component
             $this->start_date = $project->start_date->format('Y-m-d');
             $this->end_date = $project->end_date?->format('Y-m-d') ?? '';
             $this->hourly_rate = $project->hourly_rate;
+            $this->mileage_allowance = $project->mileage_allowance;
         }
     }
 
@@ -99,10 +102,14 @@ class CreateEdit extends Component
             $project = Project::with('timeRegistrations')->findOrFail($this->projectId);
             $registrations = $project->timeRegistrations;
             
+            $totalDistance = $registrations->sum('distance');
+            $mileageReimbursement = $project->mileage_allowance ? ($totalDistance * $project->mileage_allowance) : 0;
+            
             $stats = [
                 'total_registrations' => $registrations->count(),
                 'total_hours' => $registrations->sum('duration'),
-                'total_distance' => $registrations->sum('distance'),
+                'total_distance' => $totalDistance,
+                'mileage_reimbursement' => $mileageReimbursement,
                 'total_revenue' => $registrations->sum(function($r) {
                     return $r->duration * $r->project->hourly_rate;
                 }),

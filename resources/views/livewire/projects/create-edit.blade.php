@@ -97,6 +97,16 @@
                             </div>
                         </div>
 
+                        <div class="mb-3">
+                            <label for="mileage_allowance" class="form-label">Mileage Allowance</label>
+                            <input type="number" step="0.01" class="form-control @error('mileage_allowance') is-invalid @enderror" 
+                                   id="mileage_allowance" wire:model="mileage_allowance" min="0" max="999.99" placeholder="0.00">
+                            @error('mileage_allowance')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="text-muted">Optional: Rate for mileage reimbursement per {{ auth()->user()->tenant->distance_unit ?? 'km' }}</small>
+                        </div>
+
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-primary" wire:loading.attr="disabled">
                                 <span wire:loading.remove>{{ $projectId ? 'Update' : 'Create' }} Project</span>
@@ -130,6 +140,10 @@
                         <div class="mb-3">
                             <small class="text-muted d-block">Total Distance</small>
                             <h4 class="mb-0">{{ number_format($stats['total_distance']) }} km</h4>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted d-block">Mileage Reimbursement</small>
+                            <h4 class="mb-0">{{ number_format($stats['mileage_reimbursement'], 2) }}</h4>
                         </div>
                         <div class="mb-3">
                             <small class="text-muted d-block">Time Registrations</small>
