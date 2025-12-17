@@ -243,7 +243,7 @@
                                     {{ $registration_id ? 'Update' : 'Save' }}
                                 </button>
                                 @if($registration_id)
-                                    <button type="button" wire:click="reset(['registration_id', 'client_id', 'project_id', 'duration', 'description', 'status', 'location', 'distance']); status = 'ready_to_invoice'" class="btn btn-secondary">
+                                    <button type="button" wire:click="cancelEdit" class="btn btn-secondary">
                                         Cancel Edit
                                     </button>
                                 @endif

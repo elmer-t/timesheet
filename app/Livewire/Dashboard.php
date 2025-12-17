@@ -165,6 +165,12 @@ class Dashboard extends Component
         $this->reset(['registration_id', 'client_id', 'project_id', 'duration', 'description']);
     }
 
+    public function cancelEdit()
+    {
+        $this->reset(['registration_id', 'client_id', 'project_id', 'duration', 'description', 'status', 'location', 'distance']);
+        $this->status = 'ready_to_invoice';
+    }
+
     public function closeModal()
     {
         $this->showModal = false;
