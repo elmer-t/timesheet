@@ -22,8 +22,8 @@
                                 <th>Project</th>
                                 <th>Duration</th>
                                 <th>Revenue</th>
+                                <th>Travelled</th>
                                 <th>Status</th>
-                                <th>Description</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -51,6 +51,7 @@
                                             <span class="text-muted">-</span>
                                         @endif
                                     </td>
+									<td>{{ number_format($registration->distance, 0) }} {{ auth()->user()->tenant->distance_unit ?? 'km' }}</td>
                                     <td>
                                         @php
                                             $statusClasses = [
@@ -63,7 +64,6 @@
                                             {{ \App\Models\TimeRegistration::getStatuses()[$registration->status] ?? $registration->status }}
                                         </span>
                                     </td>
-                                    <td>{{ Str::limit($registration->description, 50) }}</td>
                                     <td>
                                         <a href="{{ route('app.registrations.edit', $registration) }}" 
                                            class="btn btn-sm btn-outline-primary" wire:navigate>
