@@ -37,11 +37,6 @@
         <div class="card mb-4">
             <div class="card-body">
                 <h5>{{ $periodLabel }}</h5>
-                <p class="mb-0">
-                    <strong>Total Hours:</strong> {{ number_format($totalHours, 2) }} | 
-                    <strong>Total Distance:</strong> {{ $totalDistance }} {{ Auth::user()->tenant->distance_unit }} | 
-                    <strong>Total Revenue:</strong> {{ number_format($totalRevenue, 2) }}
-                </p>
             </div>
         </div>
 
@@ -101,6 +96,21 @@
                                 </tr>
                             @endforeach
                         </tbody>
+						<tfoot>
+							<tr>
+								<th colspan="4" class="text-end">Totals:</th>
+								<th>
+									{{ $totalDistance }} {{ Auth::user()->tenant->distance_unit }}
+								</th>
+								<th>
+									{{ number_format($totalHours, 2) }}h
+								</th>
+								<th></th>
+								<th>
+									{{ number_format($totalRevenue, 2) }}
+								</th>
+							</tr>
+						</tfoot>
                     </table>
                 </div>
             </div>

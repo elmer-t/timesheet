@@ -17,10 +17,10 @@
         <div class="row mb-4">
             <div class="col">
                 <h1>Timesheet</h1>
-                <h3>{{ $client->name }}</h3>
                 <p class="text-muted">{{ $periodLabel }}</p>
+                <h3>{{ $client->name }}</h3>
             </div>
-            <div class="col-auto">
+            <div class="col-auto mt-5">
                 <p><strong>{{ auth()->user()->tenant->name }}</strong></p>
                 <p>{{ auth()->user()->name }}</p>
             </div>
@@ -29,8 +29,7 @@
         @if($client->address)
             <div class="row mb-4">
                 <div class="col">
-                    <p class="mb-0"><strong>Client Address:</strong></p>
-                    <p>{{ nl2br(e($client->address)) }}</p>
+                    <p>{!! nl2br(e($client->address)) !!}</p>
                 </div>
             </div>
         @endif
@@ -66,16 +65,15 @@
                                 -
                             @endif
                         </td>
-                        <td>{{ number_format($registration->duration, 1) }}</td>
+                        <td>{{ number_format($registration->duration, 2) }}</td>
                     </tr>
                 @endforeach
             </tbody>
             <tfoot>
                 <tr class="table-active fw-bold">
-                    <td colspan="3" class="text-end">Total:</td>
-                    <td>-</td>
+                    <td colspan="4" class="text-end">Total:</td>
                     <td>{{ $totalDistance }} {{ auth()->user()->tenant->distance_unit }}</td>
-                    <td>{{ number_format($totalHours, 1) }}</td>
+                    <td>{{ number_format($totalHours, 2) }}</td>
                 </tr>
             </tfoot>
         </table>
