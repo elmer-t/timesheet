@@ -310,7 +310,7 @@
                         <i class="bi bi-person-circle"></i> {{ auth()->user()->name }}
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><h6 class="dropdown-header">{{ auth()->user()->email }}</h6></li>
+                        <li><h6 class="dropdown-item">{{ auth()->user()->email }}</h6></li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
                             <form method="POST" action="{{ route('logout') }}">
