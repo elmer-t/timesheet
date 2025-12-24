@@ -11,9 +11,15 @@
     foreach ($registrations as $registration) {
         $date = $registration->date->format('Y-m-d');
         if (!isset($dailyHours[$date])) {
-            $dailyHours[$date] = ['hours' => 0, 'registrations' => []];
+            $dailyHours[$date] = ['hours' => 0, 'non_paid_hours' => 0, 'registrations' => []];
         }
         $dailyHours[$date]['hours'] += $registration->hours;
+        
+        // Track non-paid hours separately
+        if ($registration->status === 'non_paid') {
+            $dailyHours[$date]['non_paid_hours'] += $registration->hours;
+        }
+        
         $dailyHours[$date]['registrations'][] = $registration;
     }
 @endphp
@@ -70,11 +76,15 @@
                                     $cellDate = \Carbon\Carbon::create($year, $month, $cellDay);
                                     $dateKey = $cellDate->format('Y-m-d');
                                     $hours = $dailyHours[$dateKey]['hours'] ?? 0;
+                                    $nonPaidHours = $dailyHours[$dateKey]['non_paid_hours'] ?? 0;
                                     $hasRegistrations = isset($dailyHours[$dateKey]);
                                     $isToday = $cellDate->isSameDay($today);
                                     
+                                    // If all hours are non-paid, use grey background
                                     $bgClass = '';
-                                    if ($hours >= 8) {
+                                    if ($hours > 0 && $nonPaidHours === $hours) {
+                                        $bgClass = 'bg-non-paid';
+                                    } elseif ($hours >= 8) {
                                         $bgClass = 'bg-success-subtle';
                                     } elseif ($hours > 0) {
                                         $bgClass = 'bg-warning-subtle';
@@ -92,6 +102,7 @@
                                                 'project' => $r->project ? $r->project->name : null,
                                                 'description' => $r->description,
                                                 'hours' => $r->hours,
+                                                'status' => $r->status,
                                                 'edit_url' => route('app.registrations.edit', $r->id)
                                             ])) }}"
                                         @else
@@ -105,7 +116,7 @@
                                     <div class="calendar-day-number">{{ $cellDay }}</div>
                                     @if($hours > 0)
                                         <div class="calendar-day-hours">
-                                            <small class="text-muted">{{ number_format($hours, 1) }}h</small>
+                                            <small class="{{ $nonPaidHours === $hours ? 'text-muted' : 'text-dark' }}">{{ number_format($hours, 1) }}h</small>
                                         </div>
                                     @endif
                                 </td>
@@ -120,6 +131,7 @@
     <div class="mt-3 d-flex gap-3">
         <small><span class="badge bg-success-subtle text-dark">■</span> 8+ hours</small>
         <small><span class="badge bg-warning-subtle text-dark">■</span> < 8 hours</small>
+        <small><span class="badge bg-non-paid text-muted">■</span> Non-paid hours</small>
         <small><span class="badge bg-light text-dark">■</span> No registrations</small>
     </div>
 </div>
@@ -388,11 +400,25 @@ document.addEventListener('DOMContentLoaded', function() {
             
             registrations.forEach(reg => {
                 totalHours += parseFloat(reg.hours);
+                
+                // Add status badge styling
+                let statusBadge = '';
+                let statusClass = 'secondary';
+                if (reg.status === 'non_paid') {
+                    statusBadge = '<span class="badge bg-secondary text-white ms-1">Non-paid</span>';
+                } else if (reg.status === 'paid') {
+                    statusBadge = '<span class="badge bg-success text-white ms-1">Paid</span>';
+                } else if (reg.status === 'invoiced') {
+                    statusBadge = '<span class="badge bg-info text-white ms-1">Invoiced</span>';
+                } else if (reg.status === 'ready_to_invoice') {
+                    statusBadge = '<span class="badge bg-warning text-dark ms-1">Ready</span>';
+                }
+                
                 html += `
-                    <div class="list-group-item">
+                    <div class="list-group-item ${reg.status === 'non_paid' ? 'opacity-75' : ''}">
                         <div class="d-flex justify-content-between align-items-start">
                             <div class="flex-grow-1">
-                                <h6 class="mb-1">${reg.project || '<span class="text-muted">No project</span>'}</h6>
+                                <h6 class="mb-1">${reg.project || '<span class="text-muted">No project</span>'}${statusBadge}</h6>
                                 <p class="mb-1 text-muted small">${reg.description || 'No description'}</p>
                             </div>
                             <div class="text-end">
@@ -781,5 +807,10 @@ window.editRegistration = async function(registrationId) {
 
 .bg-warning-subtle {
     background-color: #fff3cd !important;
+}
+
+.bg-non-paid {
+    background-color: #e9ecef !important;
+    opacity: 0.7;
 }
 </style>

@@ -23,6 +23,7 @@ class Project extends Model
         'name',
         'description',
         'status',
+        'is_paid',
         'start_date',
         'end_date',
         'hourly_rate',
@@ -33,6 +34,7 @@ class Project extends Model
         'start_date' => 'date',
         'end_date' => 'date',
         'hourly_rate' => 'decimal:2',
+        'is_paid' => 'boolean',
     ];
 
     protected static function booted(): void

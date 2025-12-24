@@ -55,6 +55,22 @@
                             @enderror
                         </div>
 
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input @error('is_paid') is-invalid @enderror" 
+                                       type="checkbox" 
+                                       id="is_paid" 
+                                       wire:model="is_paid">
+                                <label class="form-check-label" for="is_paid">
+                                    Paid Project
+                                </label>
+                                @error('is_paid')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="form-text text-muted d-block">Uncheck for non-paid projects. Time registrations for non-paid projects will automatically be marked as Non-paid.</small>
+                            </div>
+                        </div>
+
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="start_date" class="form-label">Start Date *</label>

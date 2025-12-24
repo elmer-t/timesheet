@@ -79,6 +79,17 @@ class CreateEdit extends Component
         $this->filterProjects();
     }
 
+    public function updatedProjectId()
+    {
+        // If a non-paid project is selected, set status to non-paid
+        if ($this->project_id) {
+            $project = $this->projects->firstWhere('id', $this->project_id);
+            if ($project && !$project->is_paid) {
+                $this->status = TimeRegistration::STATUS_NON_PAID;
+            }
+        }
+    }
+
     public function filterProjects()
     {
         if ($this->client_id) {
@@ -98,6 +109,11 @@ class CreateEdit extends Component
             if (!$project->canRegisterTime()) {
                 $this->addError('project_id', 'This project is not available for time registration.');
                 return;
+            }
+            
+            // Force non-paid status for non-paid projects
+            if (!$project->is_paid) {
+                $validated['status'] = TimeRegistration::STATUS_NON_PAID;
             }
         }
 

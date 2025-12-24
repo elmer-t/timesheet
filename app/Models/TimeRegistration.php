@@ -33,6 +33,7 @@ class TimeRegistration extends Model
     const STATUS_READY_TO_INVOICE = 'ready_to_invoice';
     const STATUS_INVOICED = 'invoiced';
     const STATUS_PAID = 'paid';
+    const STATUS_NON_PAID = 'non_paid';
 
     public static function getStatuses(): array
     {
@@ -40,6 +41,7 @@ class TimeRegistration extends Model
             self::STATUS_READY_TO_INVOICE => 'Ready to Invoice',
             self::STATUS_INVOICED => 'Invoiced',
             self::STATUS_PAID => 'Paid',
+            self::STATUS_NON_PAID => 'Non-paid',
         ];
     }
 

@@ -15,6 +15,7 @@ class CreateEdit extends Component
     public $name = '';
     public $description = '';
     public $status = 'active';
+    public $is_paid = true;
     public $start_date;
     public $end_date = '';
     public $hourly_rate = '';
@@ -31,6 +32,7 @@ class CreateEdit extends Component
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'status' => 'required|in:active,inactive,completed',
+            'is_paid' => 'required|boolean',
             'start_date' => 'required|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
             'hourly_rate' => 'required|numeric|min:0',
@@ -58,6 +60,7 @@ class CreateEdit extends Component
             $this->name = $project->name;
             $this->description = $project->description;
             $this->status = $project->status;
+            $this->is_paid = $project->is_paid;
             $this->start_date = $project->start_date->format('Y-m-d');
             $this->end_date = $project->end_date?->format('Y-m-d') ?? '';
             $this->hourly_rate = $project->hourly_rate;
