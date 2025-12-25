@@ -68,7 +68,7 @@
                             @foreach($registrations as $registration)
                                 <tr>
                                     <td>{{ $registration->date->format('M d, Y') }}</td>
-                                    <td>{{ $registration->project?->name ?? '-' }}</td>
+                                    <td>{{ $registration->project->project_number ?? '' }} - {{ $registration->project?->name ?? '-' }}</td>
                                     <td>{{ Str::limit($registration->description, 50) }}</td>
                                     <td>{{ $registration->location ?? '-' }}</td>
                                     <td>

@@ -50,6 +50,7 @@
                         <td>{{ $registration->date->format('M d, Y') }}</td>
                         <td>
                             @if($registration->project)
+								{{ $registration->project->project_number }} -
                                 {{ $registration->project->name }}
                             @else
                                 <span class="text-muted">-</span>
