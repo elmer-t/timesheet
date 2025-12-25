@@ -2,6 +2,7 @@
 
 namespace App\Livewire\TimeRegistrations;
 
+use App\Http\Requests\TimeRegistrationRequest;
 use App\Models\Client;
 use App\Models\Project;
 use App\Models\TimeRegistration;
@@ -25,16 +26,7 @@ class CreateEdit extends Component
 
     protected function rules()
     {
-        return [
-            'client_id' => 'required|exists:clients,id',
-            'project_id' => 'nullable|exists:projects,id',
-            'date' => 'required|date',
-            'duration' => 'required|numeric|min:0.25|max:24',
-            'description' => 'nullable|string',
-            'status' => 'required|in:' . implode(',', array_keys(TimeRegistration::getStatuses())),
-            'location' => 'nullable|string|max:255',
-            'distance' => 'nullable|integer|min:0|max:999999',
-        ];
+        return (new TimeRegistrationRequest())->rules();
     }
 
     public function mount($id = null)

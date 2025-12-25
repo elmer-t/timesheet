@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Projects;
 
+use App\Http\Requests\ProjectRequest;
 use App\Models\Client;
 use App\Models\Currency;
 use App\Models\Project;
@@ -26,18 +27,7 @@ class CreateEdit extends Component
 
     protected function rules()
     {
-        return [
-            'client_id' => 'required|exists:clients,id',
-            'currency_id' => 'required|exists:currencies,id',
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'status' => 'required|in:active,inactive,completed',
-            'is_paid' => 'required|boolean',
-            'start_date' => 'required|date',
-            'end_date' => 'nullable|date|after_or_equal:start_date',
-            'hourly_rate' => 'required|numeric|min:0',
-            'mileage_allowance' => 'nullable|numeric|min:0|max:999.99',
-        ];
+        return (new ProjectRequest())->rules();
     }
 
     public function mount($id = null, $client_id = null)
@@ -100,6 +90,7 @@ class CreateEdit extends Component
     public function render()
     {
         $stats = null;
+        $project = null;
         
         if ($this->projectId) {
             $project = Project::with('timeRegistrations')->findOrFail($this->projectId);
@@ -124,6 +115,6 @@ class CreateEdit extends Component
             ];
         }
         
-        return view('livewire.projects.create-edit', compact('stats'));
+        return view('livewire.projects.create-edit', compact('stats', 'project'));
     }
 }

@@ -2,9 +2,9 @@
 
 namespace App\Livewire\Users;
 
+use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
 use Livewire\Component;
 
 class CreateEdit extends Component
@@ -18,22 +18,9 @@ class CreateEdit extends Component
 
     protected function rules()
     {
-        $rules = [
-            'name' => 'required|string|max:255',
-            'is_admin' => 'boolean',
-        ];
-
-        if ($this->userId) {
-            $rules['email'] = 'required|string|email|max:255|unique:users,email,' . $this->userId;
-            if ($this->password) {
-                $rules['password'] = ['required', 'confirmed', Rules\Password::defaults()];
-            }
-        } else {
-            $rules['email'] = 'required|string|email|max:255|unique:users';
-            $rules['password'] = ['required', 'confirmed', Rules\Password::defaults()];
-        }
-
-        return $rules;
+        $request = new UserRequest();
+        $request->merge(['userId' => $this->userId]);
+        return $request->rules();
     }
 
     public function mount($id = null)

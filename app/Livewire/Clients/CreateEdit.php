@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Clients;
 
+use App\Http\Requests\ClientRequest;
 use App\Models\Client;
 use Livewire\Component;
 
@@ -15,12 +16,7 @@ class CreateEdit extends Component
 
     protected function rules()
     {
-        return [
-            'name' => 'required|string|max:255',
-            'email' => 'nullable|email|max:255',
-            'phone' => 'nullable|string|max:255',
-            'address' => 'nullable|string',
-        ];
+        return (new ClientRequest())->rules();
     }
 
     public function mount($id = null)
