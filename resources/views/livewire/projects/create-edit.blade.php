@@ -8,6 +8,9 @@
     <div class="row">
         <div class="col-md-8">
             <div class="card">
+				<div class="card-header">
+					<h5 class="mb-0">{{ $projectId ? ($project->project_number ?? 'N/A') : 'New Project' }}</h5>
+				</div>
                 <div class="card-body">
                     <form wire:submit="save">
                         <div class="mb-3">
@@ -42,34 +45,41 @@
                             @enderror
                         </div>
 
-                        <div class="mb-3">
-                            <label for="status" class="form-label">Status *</label>
-                            <select class="form-select @error('status') is-invalid @enderror" 
-                                    id="status" wire:model="status" required>
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                                <option value="completed">Completed</option>
-                            </select>
-                            @error('status')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+						<div class="col my-5"></div>
 
-                        <div class="mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input @error('is_paid') is-invalid @enderror" 
-                                       type="checkbox" 
-                                       id="is_paid" 
-                                       wire:model="is_paid">
-                                <label class="form-check-label" for="is_paid">
-                                    Paid Project
-                                </label>
-                                @error('is_paid')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                                <small class="form-text text-muted d-block">Uncheck for non-paid projects. Time registrations for non-paid projects will automatically be marked as Non-paid.</small>
-                            </div>
-                        </div>
+						<div class="row">
+							<div class="col-md-6 mb-3">
+								<label for="status" class="form-label">Status *</label>
+								<select class="form-select @error('status') is-invalid @enderror" 
+										id="status" wire:model="status" required>
+									<option value="active">Active</option>
+									<option value="inactive">Inactive</option>
+									<option value="completed">Completed</option>
+								</select>
+								@error('status')
+									<div class="invalid-feedback">{{ $message }}</div>
+								@enderror
+								<small class="form-text text-muted d-block">Only active projects can be selected for time registrations.</small>
+							</div>
+
+							<div class="col-md-6 mb-3">
+								<div class="form-check">
+									<input class="form-check-input @error('is_paid') is-invalid @enderror" 
+										type="checkbox" 
+										id="is_paid" 
+										wire:model="is_paid">
+									<label class="form-check-label" for="is_paid">
+										Paid Project
+									</label>
+									@error('is_paid')
+										<div class="invalid-feedback">{{ $message }}</div>
+									@enderror
+									<small class="form-text text-muted d-block">Time registrations for non-paid projects will automatically be marked as Non-paid.</small>
+								</div>
+							</div>
+						</div>
+
+						<div class="col my-5"></div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
@@ -90,8 +100,10 @@
                             </div>
                         </div>
 
+						<div class="col my-5"></div>
+
                         <div class="row">
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <label for="currency_id" class="form-label">Currency *</label>
                                 <select class="form-select @error('currency_id') is-invalid @enderror" 
                                         id="currency_id" wire:model="currency_id" required>
@@ -103,7 +115,7 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <label for="hourly_rate" class="form-label">Hourly Rate *</label>
                                 <input type="number" step="0.01" class="form-control @error('hourly_rate') is-invalid @enderror" 
                                        id="hourly_rate" wire:model="hourly_rate" required>
@@ -111,17 +123,16 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="mileage_allowance" class="form-label">Mileage Allowance</label>
-                            <input type="number" step="0.01" class="form-control @error('mileage_allowance') is-invalid @enderror" 
-                                   id="mileage_allowance" wire:model="mileage_allowance" min="0" max="999.99" placeholder="0.00">
-                            @error('mileage_allowance')
+							
+							<div class="col-md-4 mb-3">
+								<label for="mileage_allowance" class="form-label">Mileage Allowance</label>
+								<input type="number" step="0.01" class="form-control @error('mileage_allowance') is-invalid @enderror" 
+								id="mileage_allowance" wire:model="mileage_allowance" min="0" max="999.99" placeholder="0.00">
+								@error('mileage_allowance')
                                 <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            <small class="text-muted">Optional: Rate for mileage reimbursement per {{ auth()->user()->tenant->distance_unit ?? 'km' }}</small>
-                        </div>
+								@enderror
+							</div>
+						</div>
 
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-primary" wire:loading.attr="disabled">
