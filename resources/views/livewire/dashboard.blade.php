@@ -75,28 +75,28 @@
                                         @if($day['hours'] > 0)
                                             <div class="d-flex flex-column gap-1">
                                                 @if($day['by_status']['ready_to_invoice'] > 0)
-                                                    <span class="badge bg-warning text-dark" style="font-size: 0.7rem;">
+                                                    <span class="badge bg-warning text-dark" style="font-size: 0.7rem;" title="Ready to Invoice">
                                                         {{ number_format($day['by_status']['ready_to_invoice'], 2) }}h
                                                     </span>
                                                 @endif
                                                 @if($day['by_status']['invoiced'] > 0)
-                                                    <span class="badge bg-info text-dark" style="font-size: 0.7rem;">
+                                                    <span class="badge bg-info text-dark" style="font-size: 0.7rem;" title="Invoiced">
                                                         {{ number_format($day['by_status']['invoiced'], 2) }}h
                                                     </span>
                                                 @endif
                                                 @if($day['by_status']['paid'] > 0)
-                                                    <span class="badge bg-success" style="font-size: 0.7rem;">
+                                                    <span class="badge bg-success" style="font-size: 0.7rem;" title="Paid">
                                                         {{ number_format($day['by_status']['paid'], 2) }}h
                                                     </span>
                                                 @endif
                                                 @if($day['by_status']['non_paid'] > 0)
-                                                    <span class="badge bg-secondary text-white" style="font-size: 0.7rem; opacity: 0.7;">
+                                                    <span class="badge bg-secondary text-white" style="font-size: 0.7rem; opacity: 0.7;" title="Non Paid">
                                                         {{ number_format($day['by_status']['non_paid'], 2) }}h
                                                     </span>
                                                 @endif
                                                 @if($day['distance'] > 0)
                                                     <span class="badge bg-secondary" style="font-size: 0.7rem;">
-                                                        {{ $day['distance'] }} {{ Auth::user()->tenant->distance_unit }}
+                                                        {{ $day['distance'] }}{{ Auth::user()->tenant->distance_unit }}
                                                     </span>
                                                 @endif
                                             </div>
