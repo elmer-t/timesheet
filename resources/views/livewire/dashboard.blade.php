@@ -89,6 +89,11 @@
                                                         {{ number_format($day['by_status']['paid'], 2) }}h
                                                     </span>
                                                 @endif
+                                                @if($day['by_status']['non_paid'] > 0)
+                                                    <span class="badge bg-secondary text-white" style="font-size: 0.7rem; opacity: 0.7;">
+                                                        {{ number_format($day['by_status']['non_paid'], 2) }}h
+                                                    </span>
+                                                @endif
                                                 @if($day['distance'] > 0)
                                                     <span class="badge bg-secondary" style="font-size: 0.7rem;">
                                                         {{ $day['distance'] }} {{ Auth::user()->tenant->distance_unit }}

@@ -207,6 +207,7 @@ class Dashboard extends Component
                     'ready_to_invoice' => 0,
                     'invoiced' => 0,
                     'paid' => 0,
+                    'non_paid' => 0,
                 ];
                 
                 foreach ($dayRegistrations as $reg) {
@@ -247,6 +248,7 @@ class Dashboard extends Component
                     'ready_to_invoice' => 0,
                     'invoiced' => 0,
                     'paid' => 0,
+                    'non_paid' => 0,
                 ],
             ];
             
