@@ -158,7 +158,9 @@
                     <div class="card-body">
                         <div class="mb-3">
                             <small class="text-muted d-block">Total Hours</small>
-                            <h4 class="mb-0">{{ floor($stats['total_hours'] / 8) }}d {{ floor($stats['total_hours'] % 8) }}h {{ round((($stats['total_hours'] * 60) % 60)) }}m</h4>
+                            <h4 class="mb-0">{{ $stats['total_hours'] }}h 
+								<small class="text-muted">({{ floor($stats['total_hours'] / 8) }}d {{ floor($stats['total_hours'] % 8) }}h {{ round((($stats['total_hours'] * 60) % 60)) }}m)</small>
+							</h4>
                         </div>
                         <div class="mb-3">
                             <small class="text-muted d-block">Total Revenue</small>
