@@ -1,7 +1,7 @@
 <div>
     <div class="row mb-4">
         <div class="col">
-            <h1 class="h2">Timesheets</h1>
+            <h1 class="h2">{{ env('APP_NAME') }}</h1>
         </div>
     </div>
 
@@ -20,9 +20,9 @@
                 <div class="col-md-4 mb-3">
                     <label for="period" class="form-label">Period</label>
                     <select class="form-select" id="period" wire:model.live="period">
-                        <option value="day">Day</option>
                         <option value="week">Week</option>
                         <option value="month">Month</option>
+                        <option value="day">Day</option>
                     </select>
                 </div>
                 <div class="col-md-4 mb-3">

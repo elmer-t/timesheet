@@ -37,7 +37,7 @@ class TimesheetController extends Controller
                     $startOfWeek = $selectedDate->copy()->startOfWeek();
                     $endOfWeek = $selectedDate->copy()->endOfWeek();
                     $query->whereBetween('date', [$startOfWeek, $endOfWeek]);
-                    $periodLabel = 'Week of ' . $startOfWeek->format('M j') . ' - ' . $endOfWeek->format('M j, Y');
+                    $periodLabel = "Week {$selectedDate->weekOfYear} ({$startOfWeek->format('M j')} - {$endOfWeek->format('M j, Y')})";
                     break;
                 
                 case 'month':
@@ -92,7 +92,7 @@ class TimesheetController extends Controller
                 $startOfWeek = $selectedDate->copy()->startOfWeek();
                 $endOfWeek = $selectedDate->copy()->endOfWeek();
                 $query->whereBetween('date', [$startOfWeek, $endOfWeek]);
-                $periodLabel = 'Week of ' . $startOfWeek->format('M j') . ' - ' . $endOfWeek->format('M j, Y');
+                $periodLabel = "Week {$selectedDate->weekOfYear} ({$startOfWeek->format('M j')} - {$endOfWeek->format('M j, Y')})";
                 break;
             
             case 'month':

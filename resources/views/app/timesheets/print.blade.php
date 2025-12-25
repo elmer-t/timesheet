@@ -14,25 +14,24 @@
 </head>
 <body>
     <div class="container">
-        <div class="row mb-4">
-            <div class="col">
-                <h1>Timesheet</h1>
+		<div class="row">
+			<div class="col-6">
+                <h1>{{ env('APP_NAME') }}</h1>
                 <p class="text-muted">{{ $periodLabel }}</p>
-                <h3>{{ $client->name }}</h3>
             </div>
-            <div class="col-auto mt-5">
-                <p><strong>{{ auth()->user()->tenant->name }}</strong></p>
+		</div>
+        <div class="row mb-5">
+            <div class="col-6">
+                <h3>{{ $client->name }}</h3>
+				@if($client->address)
+				<p>{!! nl2br(e($client->address)) !!}</p>
+				@endif
+            </div>
+            <div class="col-6 text-end">
+                <h3>{{ auth()->user()->tenant->name }}</h3>
                 <p>{{ auth()->user()->name }}</p>
             </div>
         </div>
-
-        @if($client->address)
-            <div class="row mb-4">
-                <div class="col">
-                    <p>{!! nl2br(e($client->address)) !!}</p>
-                </div>
-            </div>
-        @endif
 
         <table class="table table-bordered">
             <thead>
@@ -78,22 +77,29 @@
             </tfoot>
         </table>
 
-        <div class="row mt-5 no-print">
-            <div class="col text-center">
-                <button onclick="window.print()" class="btn btn-primary">Print Timesheet</button>
-                <a href="{{ route('app.timesheets.index') }}" class="btn btn-secondary">Back</a>
-            </div>
-        </div>
-
         <div class="row mt-5" style="page-break-inside: avoid;">
-            <div class="col-6">
-                <p class="mb-0">__________________________________</p>
-                <p class="text-muted">Signature</p>
-            </div>
-            <div class="col-6">
-                <p class="mb-0">Date: {{ date('M d, Y') }}</p>
+			
+		<div class="col-12 mb-5">
+				<p class="mb-0">Date: {{ date('M d, Y') }}</p>
+			</div>
+
+			<div class="col-6">
+				<p class="mb-0">__________________________________</p>
+				<p class="text-muted">Signature contractor</p>
+			</div>
+			<div class="col-6">
+				<p class="mb-0">__________________________________</p>
+                <p class="text-muted">Signature client</p>
             </div>
         </div>
+		
+		<div class="row mt-5 no-print">
+			<div class="col text-center">
+				<button onclick="window.print()" class="btn btn-primary">Print Timesheet</button>
+				<a href="{{ route('app.timesheets.index') }}" class="btn btn-secondary">Back</a>
+			</div>
+		</div>
+
     </div>
 </body>
 </html>

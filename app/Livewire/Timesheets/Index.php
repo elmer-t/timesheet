@@ -10,7 +10,7 @@ use Livewire\Component;
 class Index extends Component
 {
     public $selectedClientId = '';
-    public $period = 'month';
+    public $period = 'week';
     public $date;
 
     public function mount()
@@ -42,7 +42,7 @@ class Index extends Component
                     $startOfWeek = $selectedDate->copy()->startOfWeek();
                     $endOfWeek = $selectedDate->copy()->endOfWeek();
                     $query->whereBetween('date', [$startOfWeek, $endOfWeek]);
-                    $periodLabel = 'Week of ' . $startOfWeek->format('M j') . ' - ' . $endOfWeek->format('M j, Y');
+                    $periodLabel = "Week {$selectedDate->weekOfYear} ({$startOfWeek->format('M j')} - {$endOfWeek->format('M j, Y')})";
                     break;
                 
                 case 'month':
