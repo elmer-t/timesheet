@@ -392,6 +392,13 @@
                         <span class="nav-link-text">Settings</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('app.jobs.*') ? 'active' : '' }}" 
+                       href="{{ route('app.jobs.monitor') }}">
+                        <i class="bi bi-list-check"></i>
+                        <span class="nav-link-text">Job Monitor</span>
+                    </a>
+                </li>
             @endif
         </ul>
         
@@ -419,6 +426,7 @@
             @endif
 
             @yield('content')
+            {{ $slot ?? '' }}
         </div>
     </main>
 

@@ -69,6 +69,9 @@ Route::prefix('app')->middleware(['auth', 'tenant'])->name('app.')->group(functi
         // Tenant Settings
         Route::get('/settings', [TenantSettingsController::class, 'edit'])->name('settings.edit');
         Route::put('/settings', [TenantSettingsController::class, 'update'])->name('settings.update');
+        
+        // Job Monitor
+        Route::get('/jobs', \App\Livewire\JobMonitor::class)->name('jobs.monitor');
     });
 });
 
