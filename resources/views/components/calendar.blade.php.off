@@ -813,4 +813,30 @@ window.editRegistration = async function(registrationId) {
     background-color: #e9ecef !important;
     opacity: 0.7;
 }
+
+/* Dark theme improvements */
+body.dark-theme .calendar-day-number {
+    color: #f8f9fa;
+}
+
+body.dark-theme .bg-success-subtle {
+    background-color: #2d6a4f !important;
+}
+
+body.dark-theme .bg-warning-subtle {
+    background-color: #b8860b !important;
+}
+
+body.dark-theme .bg-non-paid {
+    background-color: #495057 !important;
+    opacity: 0.7;
+}
+
+body.dark-theme .calendar-day-hours small {
+    color: #e9ecef !important;
+}
+
+body.dark-theme .calendar-day-hours small.text-muted {
+    color: #adb5bd !important;
+}
 </style>

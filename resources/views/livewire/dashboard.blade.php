@@ -5,7 +5,6 @@
         </div>
     </div>
 
-    {{-- Calendar --}}
     <div class="card mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
             <button wire:click="previousMonth" class="btn btn-sm btn-outline-primary">&laquo; Previous</button>
@@ -47,7 +46,7 @@
                     <tbody>
                         @foreach($weeks as $week)
                             <tr>
-                                <td class="text-center align-middle bg-light text-muted small" style="width: 40px;">
+                                <td class="text-center align-middle text-muted small" style="width: 40px;">
                                     {{ $week[0]['date']->weekOfYear }}
                                 </td>
                                 @foreach($week as $day)

@@ -10,173 +10,7 @@
     <style>
         body {
             min-height: 100vh;
-            transition: margin-left 0.3s ease, background-color 0.3s ease, color 0.3s ease;
-        }
-        
-        /* Light Theme (default) */
-        body {
-            background-color: #f8f9fa;
-            color: #212529;
-        }
-        
-        /* Dark Theme */
-        body.dark-theme {
-            background-color: #1a1d20;
-            color: #e9ecef;
-        }
-        body.dark-theme .card {
-            background-color: #2b3035;
-            color: #e9ecef;
-            border-color: #495057;
-        }
-        body.dark-theme .card-header {
-            background-color: #212529;
-            border-color: #495057;
-            color: #e9ecef;
-        }
-        body.dark-theme .card-body {
-            background-color: #2b3035;
-            color: #e9ecef;
-        }
-        body.dark-theme .card-title {
-            color: #e9ecef;
-        }
-        body.dark-theme .form-label {
-            color: #e9ecef;
-        }
-        body.dark-theme .form-control,
-        body.dark-theme .form-select {
-            background-color: #343a40;
-            color: #e9ecef;
-            border-color: #495057;
-        }
-        body.dark-theme .form-control:focus,
-        body.dark-theme .form-select:focus {
-            background-color: #343a40;
-            color: #e9ecef;
-            border-color: #0d6efd;
-            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-        }
-        body.dark-theme .form-control::placeholder {
-            color: #6c757d;
-        }
-        body.dark-theme textarea.form-control {
-            background-color: #343a40;
-            color: #e9ecef;
-        }
-        body.dark-theme .invalid-feedback {
-            color: #ea868f;
-        }
-        body.dark-theme .form-control.is-invalid,
-        body.dark-theme .form-select.is-invalid {
-            border-color: #dc3545;
-        }
-        body.dark-theme .table {
-            color: #e9ecef;
-            --bs-table-bg: #2b3035;
-            --bs-table-striped-bg: #343a40;
-            --bs-table-hover-bg: #3d4349;
-            --bs-table-color: #e9ecef;
-        }
-        body.dark-theme .table-bordered {
-            border-color: #495057;
-        }
-        body.dark-theme .table-bordered td,
-        body.dark-theme .table-bordered th {
-            border-color: #495057;
-            color: #e9ecef;
-        }
-        body.dark-theme .table thead th {
-            background-color: #212529;
-            border-color: #495057;
-            color: #e9ecef;
-        }
-        body.dark-theme .table tbody td {
-            color: #e9ecef;
-        }
-        body.dark-theme .table-hover > tbody > tr:hover {
-            --bs-table-hover-bg: #3d4349;
-            --bs-table-hover-color: #e9ecef;
-            color: #e9ecef;
-        }
-        body.dark-theme .table-hover > tbody > tr:hover > * {
-            color: #e9ecef;
-        }
-        body.dark-theme .small,
-        body.dark-theme small {
-            color: #adb5bd;
-        }
-        body.dark-theme strong {
-            color: #f8f9fa;
-        }
-        body.dark-theme .form-control,
-        body.dark-theme .form-select {
-            background-color: #2b3035;
-            color: #e9ecef;
-            border-color: #495057;
-        }
-        body.dark-theme .form-control:focus,
-        body.dark-theme .form-select:focus {
-            background-color: #2b3035;
-            color: #e9ecef;
-            border-color: #0d6efd;
-        }
-        body.dark-theme .modal-content {
-            background-color: #2b3035;
-            color: #e9ecef;
-        }
-        body.dark-theme .modal-header,
-        body.dark-theme .modal-footer {
-            border-color: #495057;
-        }
-        body.dark-theme .modal-title {
-            color: #e9ecef;
-        }
-        body.dark-theme .btn-close {
-            filter: invert(1) grayscale(100%) brightness(200%);
-        }
-        body.dark-theme .text-muted {
-            color: #adb5bd !important;
-        }
-        body.dark-theme .bg-light {
-            background-color: #343a40 !important;
-        }
-        body.dark-theme .bg-success {
-            background-color: #198754 !important;
-        }
-        body.dark-theme .bg-warning {
-            background-color: #ffc107 !important;
-        }
-        body.dark-theme .bg-opacity-25 {
-            opacity: 0.4 !important;
-        }
-        body.dark-theme .badge {
-            color: #fff;
-        }
-        body.dark-theme .alert {
-            background-color: #2b3035;
-            border-color: #495057;
-        }
-        body.dark-theme .alert-info {
-            background-color: #0d6efd;
-            border-color: #084298;
-            color: #fff;
-        }
-        body.dark-theme a {
-            color: #6ea8fe;
-        }
-        body.dark-theme a:hover {
-            color: #8bb9fe;
-        }
-        body.dark-theme .text-decoration-none {
-            color: inherit;
-        }
-        body.dark-theme .text-decoration-none:hover {
-            color: #6ea8fe;
-        }
-        body.dark-theme code {
-            background-color: #343a40;
-            color: #e685b5;
+            transition: margin-left 0.3s ease;
         }
         
         .theme-toggle {
@@ -188,7 +22,7 @@
             border: none;
         }
         .theme-toggle:hover {
-            color: #0d6efd;
+            opacity: 0.8;
         }
         
         .sidebar {
@@ -456,28 +290,29 @@
     <script>
         // Theme toggle functionality
         function toggleTheme() {
-            const body = document.body;
+            const html = document.documentElement;
             const themeIcon = document.getElementById('themeIcon');
+            const currentTheme = html.getAttribute('data-bs-theme');
             
-            body.classList.toggle('dark-theme');
-            
-            if (body.classList.contains('dark-theme')) {
-                themeIcon.className = 'bi bi-sun';
-                localStorage.setItem('theme', 'dark');
-            } else {
+            if (currentTheme === 'dark') {
+                html.setAttribute('data-bs-theme', 'light');
                 themeIcon.className = 'bi bi-moon-stars';
                 localStorage.setItem('theme', 'light');
+            } else {
+                html.setAttribute('data-bs-theme', 'dark');
+                themeIcon.className = 'bi bi-sun';
+                localStorage.setItem('theme', 'dark');
             }
         }
         
         // Apply saved theme on page load
         document.addEventListener('DOMContentLoaded', function() {
             const savedTheme = localStorage.getItem('theme');
-            const body = document.body;
+            const html = document.documentElement;
             const themeIcon = document.getElementById('themeIcon');
             
             if (savedTheme === 'dark') {
-                body.classList.add('dark-theme');
+                html.setAttribute('data-bs-theme', 'dark');
                 themeIcon.className = 'bi bi-sun';
             }
         });
