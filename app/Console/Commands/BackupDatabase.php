@@ -81,7 +81,7 @@ class BackupDatabase extends Command
             $this->cleanupOldBackups();
 
             // Update job run status
-            $duration = now()->diffInSeconds($startTime);
+            $duration = $startTime->diffInSeconds(now());
             $jobRun->update([
                 'status' => 'success',
                 'duration_seconds' => $duration,
@@ -96,7 +96,7 @@ class BackupDatabase extends Command
 
             return Command::SUCCESS;
         } catch (Exception $e) {
-            $duration = now()->diffInSeconds($startTime);
+            $duration = $startTime->diffInSeconds(now());
             $jobRun->update([
                 'status' => 'failed',
                 'error_message' => $e->getMessage(),
