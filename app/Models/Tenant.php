@@ -16,6 +16,7 @@ class Tenant extends Model
     protected $fillable = [
         'name',
         'slug',
+        'is_system',
         'default_currency_id',
         'client_limit',
         'project_limit',
@@ -24,6 +25,19 @@ class Tenant extends Model
         'project_number_format',
         'distance_unit',
     ];
+
+    protected $casts = [
+        'is_system' => 'boolean',
+    ];
+
+    protected static function booted(): void
+    {
+        static::deleting(function (Tenant $tenant) {
+            if ($tenant->is_system) {
+                throw new \Exception('System tenants cannot be deleted.');
+            }
+        });
+    }
 
     public function users(): HasMany
     {

@@ -102,8 +102,12 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @if($jobRun->duration_seconds)
-                                            {{ $jobRun->duration_seconds }}s
+										@if($jobRun->duration_seconds)
+											@if($jobRun->duration_seconds < 1)
+												{{ round($jobRun->duration_seconds * 1000) }}ms
+											@else
+												{{ round($jobRun->duration_seconds, 2) }}s
+											@endif
                                         @else
                                             -
                                         @endif

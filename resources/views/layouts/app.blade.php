@@ -136,9 +136,11 @@
                 <button class="theme-toggle me-3" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">
                     <i class="bi bi-moon-stars" id="themeIcon"></i>
                 </button>
+                @if(auth()->user()->tenant)
                 <span class="text-white me-3">
                     <i class="bi bi-building"></i> {{ auth()->user()->tenant->name }}
                 </span>
+                @endif
                 <div class="dropdown">
                     <button class="btn btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown">
                         <i class="bi bi-person-circle"></i> {{ auth()->user()->name }}
@@ -163,76 +165,93 @@
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <ul class="nav flex-column">
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('app.calendar') ? 'active' : '' }}" 
-                   href="{{ route('app.calendar') }}">
-                    <i class="bi bi-calendar3"></i>
-                    <span class="nav-link-text">Calendar</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('app.analytics') ? 'active' : '' }}" 
-                   href="{{ route('app.analytics') }}">
-                    <i class="bi bi-graph-up"></i>
-                    <span class="nav-link-text">Analytics</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('app.registrations.*') ? 'active' : '' }}" 
-                   href="{{ route('app.registrations.index') }}">
-                    <i class="bi bi-clock"></i>
-                    <span class="nav-link-text">Time Registrations</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('app.timesheets.*') ? 'active' : '' }}" 
-                   href="{{ route('app.timesheets.index') }}">
-                    <i class="bi bi-file-earmark-text"></i>
-                    <span class="nav-link-text">Timesheets</span>
-                </a>
-            </li>
-            
-            @if(auth()->user()->isTenantAdmin())
+            @if(auth()->user()->isSuperAdmin())
+                <!-- Super Admin Menu -->
                 <li class="nav-item mt-3">
                     <h6 class="sidebar-heading px-3 mt-4 mb-1 text-white text-uppercase">
-                        <small>Administration</small>
+                        <small>Super Admin</small>
                     </h6>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('app.clients.*') ? 'active' : '' }}" 
-                       href="{{ route('app.clients.index') }}">
-                        <i class="bi bi-people"></i>
-                        <span class="nav-link-text">Clients</span>
+                    <a class="nav-link {{ request()->routeIs('super.tenants.*') ? 'active' : '' }}" 
+                       href="{{ route('super.tenants.index') }}">
+                        <i class="bi bi-building"></i>
+                        <span class="nav-link-text">Tenants</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('app.projects.*') ? 'active' : '' }}" 
-                       href="{{ route('app.projects.index') }}">
-                        <i class="bi bi-briefcase"></i>
-                        <span class="nav-link-text">Projects</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('app.users.*') ? 'active' : '' }}" 
-                       href="{{ route('app.users.index') }}">
-                        <i class="bi bi-people-fill"></i>
-                        <span class="nav-link-text">Team Members</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('app.settings.*') ? 'active' : '' }}" 
-                       href="{{ route('app.settings.edit') }}">
-                        <i class="bi bi-gear"></i>
-                        <span class="nav-link-text">Settings</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('app.jobs.*') ? 'active' : '' }}" 
-                       href="{{ route('app.jobs.monitor') }}">
+                    <a class="nav-link {{ request()->routeIs('super.jobs.*') ? 'active' : '' }}" 
+                       href="{{ route('super.jobs.monitor') }}">
                         <i class="bi bi-list-check"></i>
                         <span class="nav-link-text">Job Monitor</span>
                     </a>
                 </li>
+            @else
+                <!-- Regular User Menu -->
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('app.calendar') ? 'active' : '' }}" 
+                       href="{{ route('app.calendar') }}">
+                        <i class="bi bi-calendar3"></i>
+                        <span class="nav-link-text">Calendar</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('app.analytics') ? 'active' : '' }}" 
+                       href="{{ route('app.analytics') }}">
+                        <i class="bi bi-graph-up"></i>
+                        <span class="nav-link-text">Analytics</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('app.registrations.*') ? 'active' : '' }}" 
+                       href="{{ route('app.registrations.index') }}">
+                        <i class="bi bi-clock"></i>
+                        <span class="nav-link-text">Time Registrations</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('app.timesheets.*') ? 'active' : '' }}" 
+                       href="{{ route('app.timesheets.index') }}">
+                        <i class="bi bi-file-earmark-text"></i>
+                        <span class="nav-link-text">Timesheets</span>
+                    </a>
+                </li>
+                
+                @if(auth()->user()->isTenantAdmin())
+                    <li class="nav-item mt-3">
+                        <h6 class="sidebar-heading px-3 mt-4 mb-1 text-white text-uppercase">
+                            <small>Administration</small>
+                        </h6>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('app.clients.*') ? 'active' : '' }}" 
+                           href="{{ route('app.clients.index') }}">
+                            <i class="bi bi-people"></i>
+                            <span class="nav-link-text">Clients</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('app.projects.*') ? 'active' : '' }}" 
+                           href="{{ route('app.projects.index') }}">
+                            <i class="bi bi-briefcase"></i>
+                            <span class="nav-link-text">Projects</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('app.users.*') ? 'active' : '' }}" 
+                           href="{{ route('app.users.index') }}">
+                            <i class="bi bi-people-fill"></i>
+                            <span class="nav-link-text">Team Members</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('app.settings.*') ? 'active' : '' }}" 
+                           href="{{ route('app.settings.edit') }}">
+                            <i class="bi bi-gear"></i>
+                            <span class="nav-link-text">Settings</span>
+                        </a>
+                    </li>
+                @endif
             @endif
         </ul>
         

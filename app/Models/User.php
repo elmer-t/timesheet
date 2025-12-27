@@ -27,6 +27,7 @@ class User extends Authenticatable
         'password',
         'tenant_id',
         'is_admin',
+        'is_super_admin',
     ];
 
     /**
@@ -50,6 +51,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_admin' => 'boolean',
+            'is_super_admin' => 'boolean',
         ];
     }
 
@@ -70,6 +72,11 @@ class User extends Authenticatable
 
     public function isTenantAdmin(): bool
     {
-        return $this->is_admin;
+        return $this->is_admin && !$this->is_super_admin;
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->is_super_admin;
     }
 }

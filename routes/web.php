@@ -69,9 +69,15 @@ Route::prefix('app')->middleware(['auth', 'tenant'])->name('app.')->group(functi
         // Tenant Settings
         Route::get('/settings', [TenantSettingsController::class, 'edit'])->name('settings.edit');
         Route::put('/settings', [TenantSettingsController::class, 'update'])->name('settings.update');
-        
-        // Job Monitor
-        Route::get('/jobs', \App\Livewire\JobMonitor::class)->name('jobs.monitor');
     });
+});
+
+// Super Admin routes (requires super admin role)
+Route::prefix('super')->middleware(['auth', 'super.admin'])->name('super.')->group(function () {
+    // Tenant Management
+    Route::get('/tenants', \App\Livewire\Tenants\Index::class)->name('tenants.index');
+    
+    // Job Monitor
+    Route::get('/jobs', \App\Livewire\JobMonitor::class)->name('jobs.monitor');
 });
 
