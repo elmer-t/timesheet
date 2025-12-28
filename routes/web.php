@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LandingController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TenantSettingsController;
 use App\Http\Controllers\TimeRegistrationController;
@@ -15,6 +16,9 @@ use Illuminate\Support\Facades\Route;
 
 // Landing page
 Route::get('/', [LandingController::class, 'index'])->name('landing');
+
+// Public pages
+Route::get('/pages/{page}', [PageController::class, 'show'])->name('pages.show');
 
 // Authentication routes
 Route::middleware('guest')->group(function () {
