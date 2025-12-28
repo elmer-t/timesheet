@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
         :root {
-            --primary-color: #6366f1;
-            --primary-hover: #4f46e5;
+            --primary-color: #f97316;
+            --primary-hover: #ea580c;
         }
         
         body {
@@ -62,7 +62,7 @@
         
         .form-control:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.15);
+            box-shadow: 0 0 0 0.2rem rgba(249, 115, 22, 0.15);
         }
         
         .btn-waitlist {
@@ -80,7 +80,7 @@
         .btn-waitlist:hover {
             background: var(--primary-hover);
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 10px 25px rgba(249, 115, 22, 0.3);
             color: white;
         }
         
