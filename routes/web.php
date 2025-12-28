@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 // Landing page
 Route::get('/', [LandingController::class, 'index'])->name('landing');
+Route::post('/waitlist', [LandingController::class, 'store'])->name('waitlist.store');
 
 // Public pages
 Route::get('/pages/{page}', [PageController::class, 'show'])->name('pages.show');
