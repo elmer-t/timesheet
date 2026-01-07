@@ -15,6 +15,7 @@ class Dashboard extends Component
     public $showModal = false;
     public $selectedDate;
     public $editingRegistrations = [];
+    public $isLoadingEdit = false;
     
     // Form fields
     public $registration_id;
@@ -86,17 +87,37 @@ class Dashboard extends Component
 
     public function editRegistration($id)
     {
-        $registration = TimeRegistration::findOrFail($id);
+        $registration = TimeRegistration::with('project')->findOrFail($id);
         
+        // Set flag to prevent updatedClientId from interfering
+        $this->isLoadingEdit = true;
+        
+        // Set registration values directly
         $this->registration_id = $registration->id;
         $this->client_id = $registration->client_id;
-        $this->project_id = $registration->project_id;
+        $this->project_id = $registration->project_id ?? '';
         $this->date = $registration->date->format('Y-m-d');
         $this->duration = $registration->duration;
-        $this->description = $registration->description;
+        $this->description = $registration->description ?? '';
         $this->status = $registration->status;
-        $this->location = $registration->location;
-        $this->distance = $registration->distance;
+        $this->location = $registration->location ?? '';
+        $this->distance = $registration->distance ?? '';
+        
+        // Clear the flag
+        $this->isLoadingEdit = false;
+    }
+
+    public function updatedClientId()
+    {
+        // Skip if we're loading an edit
+        if ($this->isLoadingEdit) {
+            return;
+        }
+        
+        // Reset project when client changes, but ONLY for new registrations
+        if (!$this->registration_id) {
+            $this->project_id = '';
+        }
     }
 
     public function deleteRegistration($id)
@@ -268,9 +289,28 @@ class Dashboard extends Component
         
         // Get clients and projects for the form
         $clients = Client::where('tenant_id', $user->tenant_id)->orderBy('name')->get();
-        $projects = $this->client_id 
-            ? Project::where('client_id', $this->client_id)->orderBy('name')->get()
-            : collect();
+        
+        // For new registrations, only show available projects
+        // For existing registrations, include the saved project even if not available
+        if ($this->client_id) {
+            $projects = Project::where('client_id', $this->client_id)
+                ->availableForRegistration()
+                ->orderBy('name')
+                ->get();
+            
+            // If editing and the saved project is not in the available list, add it
+            if ($this->registration_id && $this->project_id) {
+                if (!$projects->contains('id', $this->project_id)) {
+                    $savedProject = Project::withoutGlobalScopes()->find($this->project_id);
+                    if ($savedProject && $savedProject->client_id == $this->client_id) {
+                        $projects->push($savedProject);
+                        $projects = $projects->sortBy('name')->values();
+                    }
+                }
+            }
+        } else {
+            $projects = collect();
+        }
 
         return view('livewire.dashboard', compact(
             'weeks',

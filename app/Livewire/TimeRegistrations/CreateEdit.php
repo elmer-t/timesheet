@@ -33,12 +33,7 @@ class CreateEdit extends Component
     {
         $this->date = date('Y-m-d');
         $this->clients = Client::orderBy('name')->get();
-        $this->projects = Project::availableForRegistration()
-            ->with('client')
-            ->orderBy('name')
-            ->get();
-        $this->filteredProjects = $this->projects;
-
+        
         if ($id) {
             $registration = TimeRegistration::findOrFail($id);
             $this->authorize('update', $registration);
@@ -53,8 +48,30 @@ class CreateEdit extends Component
             $this->location = $registration->location;
             $this->distance = $registration->distance;
             
+            // For existing registrations, include available projects + the saved project
+            $this->projects = Project::availableForRegistration()
+                ->with('client')
+                ->orderBy('name')
+                ->get();
+            
+            // Ensure the saved project is in the list even if no longer available
+            if ($registration->project_id && !$this->projects->contains('id', $registration->project_id)) {
+                $savedProject = Project::with('client')->find($registration->project_id);
+                if ($savedProject) {
+                    $this->projects->push($savedProject);
+                }
+            }
+            
+            $this->filteredProjects = $this->projects;
             $this->filterProjects();
         } else {
+            // For new registrations, only show available projects
+            $this->projects = Project::availableForRegistration()
+                ->with('client')
+                ->orderBy('name')
+                ->get();
+            $this->filteredProjects = $this->projects;
+            
             // Get last used client and project from session
             $this->client_id = session('last_client_id', '');
             $this->project_id = session('last_project_id', '');
@@ -95,15 +112,18 @@ class CreateEdit extends Component
     {
         $validated = $this->validate();
 
-        // Verify project can accept time registration if project is provided
-        if (!empty($validated['project_id'])) {
+        // Verify project can accept time registration for NEW registrations only
+        if (!$this->registrationId && !empty($validated['project_id'])) {
             $project = Project::findOrFail($validated['project_id']);
             if (!$project->canRegisterTime()) {
                 $this->addError('project_id', 'This project is not available for time registration.');
                 return;
             }
-            
-            // Force non-paid status for non-paid projects
+        }
+        
+        // Force non-paid status for non-paid projects
+        if (!empty($validated['project_id'])) {
+            $project = Project::findOrFail($validated['project_id']);
             if (!$project->is_paid) {
                 $validated['status'] = TimeRegistration::STATUS_NON_PAID;
             }

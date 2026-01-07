@@ -187,7 +187,9 @@
 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Project</label>
-                                    <select wire:model="project_id" class="form-select @error('project_id') is-invalid @enderror" 
+                                    <select wire:model="project_id" 
+                                            wire:key="project-select-{{ $registration_id ?? 'new' }}"
+                                            class="form-select @error('project_id') is-invalid @enderror" 
                                             @if(!$client_id) disabled @endif>
                                         <option value="">No Project</option>
                                         @foreach($projects as $project)
