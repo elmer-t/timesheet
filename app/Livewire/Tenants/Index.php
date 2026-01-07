@@ -12,7 +12,15 @@ class Index extends Component
 
     public function render()
     {
-        $tenants = Tenant::withCount(['users', 'clients', 'projects'])
+        $tenants = Tenant::withCount([
+                'users',
+                'clients' => function ($query) {
+                    $query->withoutGlobalScopes();
+                },
+                'projects' => function ($query) {
+                    $query->withoutGlobalScopes();
+                }
+            ])
             ->orderBy('created_at', 'desc')
             ->paginate(20);
 

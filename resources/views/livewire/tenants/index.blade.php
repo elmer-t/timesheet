@@ -29,13 +29,25 @@
                                     </td>
                                     <td>{{ $tenant->created_at->format('M d, Y') }}</td>
                                     <td>
-                                        <span class="badge bg-primary">{{ $tenant->users_count }}</span>
+                                        @php
+                                            $userUsage = $tenant->user_limit > 0 ? ($tenant->users_count / $tenant->user_limit) * 100 : 0;
+                                            $userBadge = $userUsage >= 100 ? 'danger' : ($userUsage >= 80 ? 'warning' : 'success');
+                                        @endphp
+                                        <span class="badge bg-{{ $userBadge }}">{{ $tenant->users_count }}</span> / {{ $tenant->user_limit }}
                                     </td>
                                     <td>
-                                        <span class="badge bg-info">{{ $tenant->clients_count }}</span>
+                                        @php
+                                            $clientUsage = $tenant->client_limit > 0 ? ($tenant->clients_count / $tenant->client_limit) * 100 : 0;
+                                            $clientBadge = $clientUsage >= 100 ? 'danger' : ($clientUsage >= 80 ? 'warning' : 'success');
+                                        @endphp
+                                        <span class="badge bg-{{ $clientBadge }}">{{ $tenant->clients_count }}</span> / {{ $tenant->client_limit }}
                                     </td>
                                     <td>
-                                        <span class="badge bg-success">{{ $tenant->projects_count }}</span>
+                                        @php
+                                            $projectUsage = $tenant->project_limit > 0 ? ($tenant->projects_count / $tenant->project_limit) * 100 : 0;
+                                            $projectBadge = $projectUsage >= 100 ? 'danger' : ($projectUsage >= 80 ? 'warning' : 'success');
+                                        @endphp
+                                        <span class="badge bg-{{ $projectBadge }}">{{ $tenant->projects_count }}</span> / {{ $tenant->project_limit }}
                                     </td>
                                     <td>{{ $tenant->defaultCurrency ? $tenant->defaultCurrency->code : 'N/A' }}</td>
                                     <td>{{ $tenant->distance_unit }}</td>

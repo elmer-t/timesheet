@@ -41,7 +41,16 @@ class Edit extends Component
     public function render()
     {
         $tenant = auth()->user()->tenant;
-        $tenant->load('defaultCurrency', 'users', 'clients', 'projects');
+        $tenant->load([
+            'defaultCurrency',
+            'users',
+            'clients' => function ($query) {
+                $query->withoutGlobalScopes();
+            },
+            'projects' => function ($query) {
+                $query->withoutGlobalScopes();
+            }
+        ]);
         $currencies = Currency::orderBy('code')->get();
         
         return view('livewire.settings.edit', compact('tenant', 'currencies'));
