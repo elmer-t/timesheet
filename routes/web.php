@@ -84,5 +84,8 @@ Route::prefix('super')->middleware(['auth', 'super.admin'])->name('super.')->gro
     
     // Job Monitor
     Route::get('/jobs', \App\Livewire\JobMonitor::class)->name('jobs.monitor');
+    
+    // Waitlist Management
+    Route::get('/waitlist', \App\Livewire\Waitlist\Index::class)->name('waitlist.index');
 });
 

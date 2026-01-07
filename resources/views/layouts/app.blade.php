@@ -186,6 +186,13 @@
                         <span class="nav-link-text">Job Monitor</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('super.waitlist.*') ? 'active' : '' }}" 
+                       href="{{ route('super.waitlist.index') }}">
+                        <i class="bi bi-list-ul"></i>
+                        <span class="nav-link-text">Waitlist</span>
+                    </a>
+                </li>
             @else
                 <!-- Regular User Menu -->
                 <li class="nav-item">
