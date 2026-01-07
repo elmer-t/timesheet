@@ -19,7 +19,6 @@ class SuperAdminSeeder extends Seeder
             ['slug' => 'system'],
             [
                 'name' => 'System',
-                'company_name' => 'System Administration',
                 'is_system' => true,
                 'currency' => 'EUR',
                 'distance_unit' => 'km',
