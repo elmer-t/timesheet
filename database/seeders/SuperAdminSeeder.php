@@ -20,7 +20,7 @@ class SuperAdminSeeder extends Seeder
             [
                 'name' => 'System',
                 'is_system' => true,
-                'currency' => 'EUR',
+                'default_currency_id' => DB::table('currencies')->where('code', 'EUR')->value('id'),
                 'distance_unit' => 'km',
             ]
         );
